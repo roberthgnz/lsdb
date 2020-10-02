@@ -18,7 +18,7 @@ db.get("restaurants")
 ```
 Get a list of documents matching the query
 ```
-db.find({
+db.find(categories{
     collection: "restaurants",
     field: "name",
     operator: "eq",
