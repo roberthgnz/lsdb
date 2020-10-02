@@ -11,8 +11,8 @@
       const lsdb = new Lsdb("lsdb");
       lsdb.collection(["categories", "articles"]);
       console.log(lsdb.all());
-      lsdb.create("categories", { data: { title: "Drinks" } });
-      lsdb.create("categories", { data: { title: "Dinner" } });
+      lsdb.insert("categories", { data: { title: "Drinks" } });
+      lsdb.insert("categories", { data: { title: "Dinner" } });
       console.log(lsdb.count("articles"));
       console.log(lsdb.count("categories"));
       console.log(lsdb.all());

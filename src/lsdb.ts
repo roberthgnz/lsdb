@@ -107,7 +107,7 @@ class Lsdb {
    * @param data - Data of collection
    * @returns Array of created collection
    */
-  create(entity: string, { data }: { data: any }) {
+  insert(entity: string, { data }: { data: any }) {
     let docs = [...this.data[entity]];
     let limit = docs.length - 1;
     let _id = !docs.length ? 0 : Number(docs[limit]["_id"]) + 1;

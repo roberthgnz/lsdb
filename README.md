@@ -1,43 +1,57 @@
 # lsdb
 ✨Database powered by localStorage
 
+We’ll start by setting up a database:
+
+```
+const lsdb = new Lsdb("lsdb"); 
+```
+
+## Creating list of collections
+ ```
+ lsdb.collection(["categories", "articles"]);
+ ```
+
 ## Inserting
 ```
-db.insert("restaurants", { data: { name: "Chucho" } });
+lsdb.insert("categories", { data: { title: "Drinks" } });
+lsdb.insert("categories", { data: { title: "Dinner" } });
 ```
 
 ## Getting data
 Get all collections
 ```
-db.all()
+lsdb.all()
 ```
 
 Get all documents
 ```
-db.get("restaurants")
+lsdb.get("restaurants")
 ```
 Get a list of documents matching the query
 ```
-db.find(categories{
-    collection: "restaurants",
-    field: "name",
-    operator: "eq",
-    value: "Chucha",
+lsdb.find("categories", {
+    where: {
+        field: "title",
+        operator: "in",
+        value: "er",
+    },
 })
 ``` 
 
 Get a single document matching the query
 ```
-db.findOne({
-    collection: "restaurants",
-    field: "name",
-    operator: "ne",
-    value: "Chucha",
+lsdb.findOne("categories", {
+    where: {
+        field: "title",
+        operator: "in",
+        value: "er",
+    },
 })
 ```
 
 ## Removing
 Remove a single document matching the query
 ```
-db.remove("restaurants", { name: "Chucha" });
+lsdb.remove("restaurants", { name: "Chucha" });
 ```
