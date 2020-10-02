@@ -83,6 +83,15 @@ describe("lsdb", () => {
     ]);
 
     expect(
+      lsdb.find<{ foo: string }>("test-1", { where: { foo: { $in: ["bar"] } } })
+    ).toEqual([
+      {
+        _id: 0,
+        foo: "bar",
+      },
+    ]);
+
+    expect(
       lsdb.find<{ number: number }>("test-1", {
         where: { number: { $eq: 50 } },
       })
@@ -103,6 +112,40 @@ describe("lsdb", () => {
         number: 50,
       },
     ]);
+
+    expect(
+      lsdb.find<{ number: number }>("test-1", {
+        where: { number: { $gte: 30 } },
+      })
+    ).toEqual([
+      {
+        _id: 1,
+        number: 50,
+      },
+    ]);
+
+    expect(
+      lsdb.find<{ number: number }>("test-1", {
+        where: { number: { $lt: 100 } },
+      })
+    ).toEqual([
+      {
+        _id: 1,
+        number: 50,
+      },
+    ]);
+
+    expect(
+      lsdb.find<{ number: number }>("test-1", {
+        where: { number: { $ne: 20 } },
+      })
+    ).toEqual([
+      { _id: 0, foo: "bar" },
+      {
+        _id: 1,
+        number: 50,
+      },
+    ]);
   });
 
   test("insert-findOne", () => {
@@ -117,6 +160,15 @@ describe("lsdb", () => {
       _id: 0,
       number: 20,
     });
+
+    expect(
+      lsdb.findOne<{}>("test-1", {
+        where: {},
+      })
+    ).toEqual([
+      { _id: 0, number: 20 },
+      { _id: 1, number: 50 },
+    ]);
   });
 
   test("insert-update", () => {
@@ -126,5 +178,17 @@ describe("lsdb", () => {
     expect(lsdb.all()).toEqual({
       "test-1": [{ _id: 0, foo: "newBar" }],
     });
+  });
+
+  test("collection", () => {
+    console.error = jest.fn();
+
+    lsdb.collection(("hello" as unknown) as string[]);
+
+    expect(console.error).toBeCalledWith("Error: An array was expected");
+
+    lsdb.collection((["hello", true] as unknown) as string[]);
+
+    expect(console.error).toBeCalledWith("Error: All values must be string");
   });
 });
