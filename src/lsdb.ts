@@ -1,9 +1,3 @@
-interface whereOptions {
-  field: string;
-  operator: string;
-  value: any;
-}
-
 interface obj {
   [key: string]: any;
 }
