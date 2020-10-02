@@ -9,7 +9,8 @@
   },
   "scripts": {
     "dev": "tsc --watch --project tsconfig.json",
-    "build": "tsc"
+    "build": "tsc",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -26,6 +27,24 @@
   },
   "homepage": "https://github.com/buzz-js/lsdb#readme",
   "devDependencies": {
+    "@types/jest": "^26.0.14",
+    "jest": "^26.4.2",
+    "ts-jest": "^26.4.1",
     "typescript": "^4.0.3"
+  },
+  "jest": {
+    "transform": {
+      "\\.(ts|tsx)$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(ts|tsx|js|jsx)$",
+    "collectCoverageFrom": [
+      "src/**/*.ts"
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/build/",
+      "/examples/",
+      "/.github/"
+    ]
   }
 }
