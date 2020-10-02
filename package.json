@@ -4,9 +4,6 @@
   "description": "✨Database powered by localStorage",
   "main": "dist/lsdb.js",
   "types": "dist/lsdb.d.ts",
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/@buzz-js"
-  },
   "scripts": {
     "dev": "tsc --watch --project tsconfig.json",
     "build": "tsc",
