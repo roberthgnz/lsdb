@@ -132,7 +132,7 @@ class Lsdb {
   }
 
   /**
-   * Creating new collection
+   * Update collection
    * @param {String} entity - Name of collection
    * @param {Object} params - Parameters to change
    * @param data - Data of collection
