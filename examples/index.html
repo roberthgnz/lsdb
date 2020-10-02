@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Examples</title>
+  </head>
+  <body>
+    <script src="../dist/lsdb.js"></script>
+    <script>
+      const lsdb = new Lsdb("lsdb");
+      lsdb.collection(["categories", "articles"]);
+      console.log(lsdb.all());
+      lsdb.create("categories", { data: { title: "Drinks" } });
+      lsdb.create("categories", { data: { title: "Dinner" } });
+      console.log(lsdb.count("articles"));
+      console.log(lsdb.count("categories"));
+      console.log(lsdb.all());
+      console.log(
+        lsdb.find("categories", {
+          where: {
+            field: "title",
+            operator: "in",
+            value: "er",
+          },
+        })
+      );
+    </script>
+  </body>
+</html>
