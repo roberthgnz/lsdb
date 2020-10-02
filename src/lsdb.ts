@@ -35,7 +35,7 @@ type WhereArrayOperators = Operator.In;
 type WhereCondition<T extends string, T1> = { [x in T]: T1 };
 type WhereOptions<T> = {
   [fieldKey in keyof T]: Partial<WhereCondition<WhereOperators, any>> &
-    Partial<WhereCondition<WhereArrayOperators, Array<any>>>;
+  Partial<WhereCondition<WhereArrayOperators, Array<any>>>;
 };
 
 /**
@@ -60,7 +60,7 @@ class Lsdb {
   }
 
   /**
-   * Count number of collection items
+   * Count the number of entries in the collection
    * @param {String} entity - Name of collection
    * @returns {Number} - Number of data within the collection
    */
@@ -69,7 +69,7 @@ class Lsdb {
   }
 
   /**
-   * Get multiple documents
+   * Get multiple entries
    * @param {String} entity - Name of collection
    * @param where - Options which consist of mongo-like definition
    * @returns {Array|Error} - Array of matched data or thrown an error in case of invalid where clause
@@ -94,7 +94,7 @@ class Lsdb {
   }
 
   /**
-   * Get single document
+   * Get single entry
    * @param {String} entity - Name of collection
    * @param where - Options which consist of mongo-like definition
    * @returns {Object|Error} - Object of matched data or thrown an error in case of invalid where clause
@@ -133,7 +133,7 @@ class Lsdb {
   }
 
   /**
-   * Creating new collection
+   * Creating collection entry
    * @param {String} entity - Name of collection
    * @param data - Data of collection
    * @returns Array of created collection
@@ -163,7 +163,7 @@ class Lsdb {
   }
 
   /**
-   * Update collection
+   * Update collection entry
    * @param {String} entity - Name of collection
    * @param {Object} params - Parameters to change
    * @param data - Data of collection
@@ -181,16 +181,28 @@ class Lsdb {
   }
 
   /**
-   * Creating new collection
+   * Delete entry from collection
    * @param {String} entity - Name of collection
-   * @param params - Parameters to delete
-   * @returns Array of created collection
+   * @param where - Options which consist of mongo-like definition
+   * @returns {Object|Error} - Object of matched data or thrown an error in case of invalid where clause
    */
-  delete(entity: string, params: obj): void {
-    const key = Object.keys(params)[0];
-    this.data[entity] = [...this.data[entity]].filter((i) => {
-      return i[key] !== params[key];
-    });
-    localStorage.setItem(this.database, JSON.stringify(this.data));
+  delete<T>(entity: string, { where }: { where: WhereOptions<T> }): T {
+    let dataset = this.data[entity];
+
+    for (const field in where) {
+      const filters = where[field];
+      for (const operator in where[field]) {
+        const valueToFilterBy = filters[operator as Operator];
+        const index = dataset.findIndex((x: { [x in keyof T]: any }) =>
+          OperatorOperations[operator as Operator](x[field], valueToFilterBy)
+        );
+        const entry = dataset[index];
+        dataset.splice(index, 1)
+        localStorage.setItem(this.database, JSON.stringify(this.data));
+        return entry;
+      }
+    }
+
+    return dataset;
   }
 }

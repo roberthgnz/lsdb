@@ -30,6 +30,12 @@
           },
         })
       );
+      lsdb.delete("categories", {
+        where: {
+          _id: { $eq: 1 },
+        },
+      });
+      console.log(lsdb.count("categories"));
     </script>
   </body>
 </html>

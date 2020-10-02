@@ -4,18 +4,18 @@
 We’ll start by setting up a database:
 
 ```
-const lsdb = new Lsdb("lsdb"); 
+const lsdb = new Lsdb("lsdb")
 ```
 
 ## Creating list of collections
  ```
- lsdb.collection(["categories", "articles"]);
+ lsdb.collection(["categories", "articles"])
  ```
 
 ## Inserting
 ```
-lsdb.insert("categories", { data: { title: "Drinks" } });
-lsdb.insert("categories", { data: { title: "Dinner" } });
+lsdb.insert("categories", { data: { title: "Drinks" } })
+lsdb.insert("categories", { data: { title: "Dinner" } })
 ```
 
 ## Getting data
@@ -45,5 +45,9 @@ lsdb.findOne("categories", {
 ## Removing
 Remove a single document matching the query
 ```
-lsdb.remove("restaurants", { name: "Chucha" });
+lsdb.delete("categories", {
+    where: {
+    _id: { $eq: 1 },
+    },
+})
 ```
