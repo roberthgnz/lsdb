@@ -8,6 +8,42 @@ interface obj {
   [key: string]: any;
 }
 
+enum Operator {
+  Equals = "$eq",
+  NotEquals = "$ne",
+  In = "$in",
+  GreaterThen = "$gt",
+  GreaterThenOrEqual = "$gte",
+  LessThen = "$lt",
+  LessThenOrEqual = "$lte",
+}
+
+const OperatorOperations = {
+  [Operator.Equals]: (a: any, b: any) => a === b,
+  [Operator.NotEquals]: (a: any, b: any) => a !== b,
+  [Operator.GreaterThen]: (a: any, b: any) => a > b,
+  [Operator.GreaterThenOrEqual]: (a: any, b: any) => a >= b,
+  [Operator.LessThen]: (a: any, b: any) => a < b,
+  [Operator.LessThenOrEqual]: (a: any, b: any) => a <= b,
+  [Operator.In]: (a: any, b: any) => String(a).includes(b),
+};
+
+type WhereOperators =
+  | Operator.Equals
+  | Operator.NotEquals
+  | Operator.GreaterThen
+  | Operator.GreaterThenOrEqual
+  | Operator.LessThen
+  | Operator.LessThenOrEqual;
+
+type WhereArrayOperators = Operator.In;
+
+type WhereCondition<T extends string, T1> = { [x in T]: T1 };
+type WhereOptions<T> = {
+  [fieldKey in keyof T]: Partial<WhereCondition<WhereOperators, any>> &
+    Partial<WhereCondition<WhereArrayOperators, Array<any>>>;
+};
+
 /**
  * @author Roberth González
  */
@@ -16,7 +52,7 @@ class Lsdb {
   private data: obj;
 
   /**
-   * 
+   *
    * @param {String} database - The "Database" name
    */
   constructor(database: string) {
@@ -26,7 +62,7 @@ class Lsdb {
       localStorage.setItem(database, JSON.stringify({}));
     }
 
-    this.data = JSON.parse(localStorage.getItem(database) || '{}');
+    this.data = JSON.parse(localStorage.getItem(database) || "{}");
   }
 
   /**
@@ -35,57 +71,54 @@ class Lsdb {
    * @returns {Number} - Number of data within the collection
    */
   count(entity: string): number {
-    return this.data[entity].length
+    return this.data[entity].length;
   }
 
   /**
    * Get multiple documents
-   * @param {String} entity - Name of collection 
-   * @param where - Options which consist of 
-   * Filtered field, Filter operator (=,in,not eq etc..), Filter value
+   * @param {String} entity - Name of collection
+   * @param where - Options which consist of mongo-like definition
    * @returns {Array|Error} - Array of matched data or thrown an error in case of invalid where clause
    */
-  find(entity: string, { where }: { where: any }): any[] {
-    const { field, operator, value }: whereOptions = where;
-    switch (operator) {
-      case "eq":
-        return this.data[entity].filter(
-          (i: { [x: string]: any }) => i[field] === value
+  find<T>(
+    entity: string,
+    { where }: { where: WhereOptions<T> }
+  ): T[] | undefined {
+    let dataset = this.data[entity];
+
+    for (const field in where) {
+      const filters = where[field];
+      for (const operator in where[field]) {
+        const valueToFilterBy = filters[operator as Operator];
+        dataset = dataset.filter((x: { [x in keyof T]: any }) =>
+          OperatorOperations[operator as Operator](x[field], valueToFilterBy)
         );
-      case "ne":
-        return this.data[entity].filter(
-          (i: { [x: string]: any }) => i[field] !== value
-        );
-      case "in":
-        return this.data[entity].filter(
-          (i: { [x: string]: any; }) => String(i[field]).includes(value)
-        );
-      default:
-        throw new Error(`Unhandled whereClause: ${field} ${operator} ${value}`);
+      }
     }
+
+    return dataset;
   }
 
   /**
    * Get single document
-   * @param {String} entity - Name of collection 
-   * @param where - Options which consist of 
-   * Filtered field, Filter operator (=,in,not eq etc..), Filter value
+   * @param {String} entity - Name of collection
+   * @param where - Options which consist of mongo-like definition
    * @returns {Object|Error} - Object of matched data or thrown an error in case of invalid where clause
    */
-  findOne(entity: string, { where }: { where: any }): any {
-    const { field, operator, value }: whereOptions = where;
-    switch (operator) {
-      case "eq":
-        return this.data[entity].find(
-          (i: { [x: string]: any }) => i[field] === value
+  findOne<T>(entity: string, { where }: { where: WhereOptions<T> }): T {
+    let dataset = this.data[entity];
+
+    for (const field in where) {
+      const filters = where[field];
+      for (const operator in where[field]) {
+        const valueToFilterBy = filters[operator as Operator];
+        return dataset.find((x: { [x in keyof T]: any }) =>
+          OperatorOperations[operator as Operator](x[field], valueToFilterBy)
         );
-      case "ne":
-        return this.data[entity].find(
-          (i: { [x: string]: any }) => i[field] !== value
-        );
-      default:
-        throw new Error(`Unhandled whereClause: ${field} ${operator} ${value}`);
+      }
     }
+
+    return dataset;
   }
 
   /**

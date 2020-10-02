@@ -19,9 +19,14 @@
       console.log(
         lsdb.find("categories", {
           where: {
-            field: "title",
-            operator: "in",
-            value: "er",
+            title: { $in: ["er"] },
+          },
+        })
+      );
+      console.log(
+        lsdb.findOne("categories", {
+          where: {
+            _id: { $eq: 1 },
           },
         })
       );
