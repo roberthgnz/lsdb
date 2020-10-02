@@ -47,7 +47,7 @@ type WhereOptions<T> = {
 /**
  * @author Roberth González
  */
-class Lsdb {
+export default class Lsdb {
   private database: string;
   private data: obj;
 
