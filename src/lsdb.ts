@@ -4,12 +4,16 @@ interface whereOptions {
   value: any;
 }
 
+interface obj {
+  [key: string]: any;
+}
+
 /**
  * @author Roberth González
  */
 class Lsdb {
   private database: string;
-  private data: object;
+  private data: obj;
 
   /**
    * 
@@ -22,7 +26,7 @@ class Lsdb {
       localStorage.setItem(database, JSON.stringify({}));
     }
 
-    this.data = JSON.parse(localStorage.getItem(database));
+    this.data = JSON.parse(localStorage.getItem(database) || '{}');
   }
 
   /**
@@ -41,7 +45,7 @@ class Lsdb {
    * Filtered field, Filter operator (=,in,not eq etc..), Filter value
    * @returns {Array|Error} - Array of matched data or thrown an error in case of invalid where clause
    */
-  find(entity: string, { where }): any[] {
+  find(entity: string, { where }: { where: any }): any[] {
     const { field, operator, value }: whereOptions = where;
     switch (operator) {
       case "eq":
@@ -68,7 +72,7 @@ class Lsdb {
    * Filtered field, Filter operator (=,in,not eq etc..), Filter value
    * @returns {Object|Error} - Object of matched data or thrown an error in case of invalid where clause
    */
-  findOne(entity: string, { where }): any {
+  findOne(entity: string, { where }: { where: any }): any {
     const { field, operator, value }: whereOptions = where;
     switch (operator) {
       case "eq":
@@ -138,7 +142,7 @@ class Lsdb {
    * @param data - Data of collection
    * @returns Array of created collection
    */
-  update(entity: string, params: object, data: any): any {
+  update(entity: string, params: obj, data: any): any {
     const key = Object.keys(params)[0];
     const index = this.data[entity].findIndex((i: { [x: string]: any }) => {
       return i[key] === params[key];
@@ -155,7 +159,7 @@ class Lsdb {
    * @param params - Parameters to delete
    * @returns Array of created collection
    */
-  delete(entity: string, params: object): void {
+  delete(entity: string, params: obj): void {
     const key = Object.keys(params)[0];
     this.data[entity] = [...this.data[entity]].filter((i) => {
       return i[key] !== params[key];

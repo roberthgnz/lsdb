@@ -2,20 +2,22 @@
   "name": "lsdb",
   "version": "1.0.0",
   "description": "✨Database powered by localStorage",
-  "main": "index.js",
-  "directories": {
-    "lib": "lib"
-  },
+  "main": "dist/lsdb.js",
+  "types": "dist/lsdb.d.ts",
   "scripts": {
-    "dev": "tsc --watch --project tsconfig.json"
+    "dev": "tsc --watch --project tsconfig.json",
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/buzz-js/lsdb.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "database",
+    "localstorage"
+  ],
+  "author": "Roberth González",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/buzz-js/lsdb/issues"
   },

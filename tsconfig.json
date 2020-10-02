@@ -1,10 +1,14 @@
 {
   "compilerOptions": {
-    "outDir": "./dist",
-    "allowJs": true,
-    "lib": ["es6", "dom", "es2017"],
-    "target": "es5"
+    "target": "es5",
+    "module": "commonjs",
+    "lib": ["es2017", "es7", "es6", "dom"],
+    "declaration": true,
+    "outDir": "dist",
+    "strict": true,
+    "esModuleInterop": true
   },
+  "exclude": ["node_modules", "dist"],
   "include": ["./src/**/*"],
 
   // NEW: Options for file/directory watching
