@@ -1,9 +1,3 @@
-interface whereOptions {
-  field: string;
-  operator: string;
-  value: any;
-}
-
 interface obj {
   [key: string]: any;
 }
@@ -66,7 +60,7 @@ export default class Lsdb {
   }
 
   /**
-   * Count number of collection items
+   * Count the number of entries in the collection
    * @param {String} entity - Name of collection
    * @returns {Number} - Number of data within the collection
    */
@@ -75,7 +69,7 @@ export default class Lsdb {
   }
 
   /**
-   * Get multiple documents
+   * Get multiple entries
    * @param {String} entity - Name of collection
    * @param where - Options which consist of mongo-like definition
    * @returns {Array|Error} - Array of matched data or thrown an error in case of invalid where clause
@@ -100,7 +94,7 @@ export default class Lsdb {
   }
 
   /**
-   * Get single document
+   * Get single entry
    * @param {String} entity - Name of collection
    * @param where - Options which consist of mongo-like definition
    * @returns {Object|Error} - Object of matched data or thrown an error in case of invalid where clause
@@ -139,7 +133,7 @@ export default class Lsdb {
   }
 
   /**
-   * Creating new collection
+   * Creating collection entry
    * @param {String} entity - Name of collection
    * @param data - Data of collection
    * @returns Array of created collection
@@ -169,7 +163,7 @@ export default class Lsdb {
   }
 
   /**
-   * Update collection
+   * Update collection entry
    * @param {String} entity - Name of collection
    * @param {Object} params - Parameters to change
    * @param data - Data of collection
@@ -187,11 +181,11 @@ export default class Lsdb {
   }
 
   /**
-  * Delete entry from collection
-  * @param {String} entity - Name of collection
-  * @param where - Options which consist of mongo-like definition
-  * @returns {Object|Error} - Object of matched data or thrown an error in case of invalid where clause
-  */
+   * Delete entry from collection
+   * @param {String} entity - Name of collection
+   * @param where - Options which consist of mongo-like definition
+   * @returns {Object|Error} - Object of matched data or thrown an error in case of invalid where clause
+   */
   delete<T>(entity: string, { where }: { where: WhereOptions<T> }): T {
     let dataset = this.data[entity];
 
