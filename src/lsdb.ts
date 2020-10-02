@@ -11,6 +11,10 @@ class Lsdb {
   private database: string;
   private data: object;
 
+  /**
+   * 
+   * @param {String} database - The "Database" name
+   */
   constructor(database: string) {
     this.database = database;
 
@@ -21,10 +25,22 @@ class Lsdb {
     this.data = JSON.parse(localStorage.getItem(database));
   }
 
+  /**
+   * Count number of collection items
+   * @param {String} entity - Name of collection
+   * @returns {Number} - Number of data within the collection
+   */
   count(entity: string): number {
     return this.data[entity].length
   }
 
+  /**
+   * Get multiple documents
+   * @param {String} entity - Name of collection 
+   * @param where - Options which consist of 
+   * Filtered field, Filter operator (=,in,not eq etc..), Filter value
+   * @returns {Array|Error} - Array of matched data or thrown an error in case of invalid where clause
+   */
   find(entity: string, { where }): any[] {
     const { field, operator, value }: whereOptions = where;
     switch (operator) {
@@ -45,6 +61,13 @@ class Lsdb {
     }
   }
 
+  /**
+   * Get single document
+   * @param {String} entity - Name of collection 
+   * @param where - Options which consist of 
+   * Filtered field, Filter operator (=,in,not eq etc..), Filter value
+   * @returns {Object|Error} - Object of matched data or thrown an error in case of invalid where clause
+   */
   findOne(entity: string, { where }): any {
     const { field, operator, value }: whereOptions = where;
     switch (operator) {
@@ -61,6 +84,10 @@ class Lsdb {
     }
   }
 
+  /**
+   * Creating list of collections
+   * @param {Array} data - Contains the name of the collections
+   */
   collection(data: string[]): void {
     try {
       if (!Array.isArray(data)) throw new Error("An array was expected");
@@ -74,6 +101,12 @@ class Lsdb {
     }
   }
 
+  /**
+   * Creating new collection
+   * @param {String} entity - Name of collection
+   * @param data - Data of collection
+   * @returns Array of created collection
+   */
   create(entity: string, { data }: { data: any }) {
     let docs = [...this.data[entity]];
     let limit = docs.length - 1;
@@ -91,10 +124,20 @@ class Lsdb {
     return docs;
   }
 
+  /**
+   * @returns - returns all the collections
+   */
   all(): object {
     return this.data;
   }
 
+  /**
+   * Creating new collection
+   * @param {String} entity - Name of collection
+   * @param {Object} params - Parameters to change
+   * @param data - Data of collection
+   * @returns Array of created collection
+   */
   update(entity: string, params: object, data: any): any {
     const key = Object.keys(params)[0];
     const index = this.data[entity].findIndex((i: { [x: string]: any }) => {
@@ -106,6 +149,12 @@ class Lsdb {
     return doc;
   }
 
+  /**
+   * Creating new collection
+   * @param {String} entity - Name of collection
+   * @param params - Parameters to delete
+   * @returns Array of created collection
+   */
   delete(entity: string, params: object): void {
     const key = Object.keys(params)[0];
     this.data[entity] = [...this.data[entity]].filter((i) => {
