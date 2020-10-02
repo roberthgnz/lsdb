@@ -53,7 +53,11 @@ describe("lsdb", () => {
     lsdb.insert("test-1", { data: { foo: "bar" } });
     lsdb.insert("test-1", { data: { hello: "world" } });
 
-    lsdb.delete("test-1", { foo: "bar" });
+    lsdb.delete("test-1", {
+      where: {
+        _id: { $eq: 0 },
+      },
+    });
 
     expect(lsdb.all()).toEqual({
       "test-1": [
