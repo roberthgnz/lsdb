@@ -24,17 +24,11 @@ Get all collections
 lsdb.all()
 ```
 
-Get all documents
-```
-lsdb.get("restaurants")
-```
 Get a list of documents matching the query
 ```
 lsdb.find("categories", {
     where: {
-        field: "title",
-        operator: "in",
-        value: "er",
+        title: { $in: ["er"] },
     },
 })
 ``` 
@@ -43,9 +37,7 @@ Get a single document matching the query
 ```
 lsdb.findOne("categories", {
     where: {
-        field: "title",
-        operator: "in",
-        value: "er",
+        _id: { $eq: 1 },
     },
 })
 ```
