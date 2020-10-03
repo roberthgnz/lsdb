@@ -20,6 +20,16 @@
       "name": "Nitkalya Wiriyanuparb",
       "avatar_url": "https://avatars1.githubusercontent.com/u/717270?v=4",
       "profile": "https://github.com/dekpient",
+       "contributions": [
+        "test",
+        "code"
+      ]
+    },{
+      "login": "rugglcon",
+      "name": "Connor Ruggles",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/14317362?v=4",
+      "profile": "https://connorruggles.dev",
+
       "contributions": [
         "infra",
         "code"
