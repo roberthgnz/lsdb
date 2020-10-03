@@ -1,0 +1,64 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "aneeshrelan",
+      "name": "Aneesh Relan",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/17068083?v=4",
+      "profile": "https://github.com/aneeshrelan",
+      "contributions": [
+        "test",
+        "code"
+      ]
+    },
+    {
+      "login": "fr0stylo",
+      "name": "Zymantas Maumevicius",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/13507123?v=4",
+      "profile": "https://github.com/fr0stylo",
+      "contributions": [
+        "infra",
+        "code"
+      ]
+    },
+    {
+      "login": "dekpient",
+      "name": "Nitkalya Wiriyanuparb",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/717270?v=4",
+      "profile": "https://github.com/dekpient",
+      "contributions": [
+        "test",
+        "code"
+      ]
+    },
+    {
+      "login": "rugglcon",
+      "name": "Connor Ruggles",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/14317362?v=4",
+      "profile": "https://connorruggles.dev",
+      "contributions": [
+        "infra",
+        "code"
+      ]
+    },
+    {
+      "login": "SMAKSS",
+      "name": "MAKSS",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/32557358?v=4",
+      "profile": "https://smakss.github.io/",
+      "contributions": [
+        "doc"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "lsdb",
+  "projectOwner": "buzz-js",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}
