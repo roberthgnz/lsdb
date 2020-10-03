@@ -14,6 +14,16 @@
         "test",
         "code"
       ]
+    },
+    {
+      "login": "fr0stylo",
+      "name": "Zymantas Maumevicius",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/13507123?v=4",
+      "profile": "https://github.com/fr0stylo",
+      "contributions": [
+        "infra",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
