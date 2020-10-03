@@ -1,9 +1,12 @@
 {
   "name": "lsdb",
-  "version": "1.1.1",
+  "version": "1.2.1",
   "description": "✨Database powered by localStorage",
   "main": "dist/lsdb.js",
   "types": "dist/lsdb.d.ts",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "scripts": {
     "dev": "tsc --watch --project tsconfig.json",
     "build": "tsc && tsc -p tsconfig.browser.json",
