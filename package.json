@@ -6,7 +6,7 @@
   "types": "dist/lsdb.d.ts",
   "scripts": {
     "dev": "tsc --watch --project tsconfig.json",
-    "build": "tsc",
+    "build": "tsc && tsc -p tsconfig.browser.json",
     "test": "jest"
   },
   "repository": {

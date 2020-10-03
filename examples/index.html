@@ -6,36 +6,39 @@
     <title>Examples</title>
   </head>
   <body>
-    <script src="../dist/lsdb.js"></script>
+    <script data-main="../dist.browser/lsdb" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script>
     <script>
-      const lsdb = new Lsdb("lsdb");
-      lsdb.collection(["categories", "articles"]);
-      console.log(lsdb.all());
-      lsdb.insert("categories", { data: { title: "Drinks" } });
-      lsdb.insert("categories", { data: { title: "Dinner" } });
-      console.log(lsdb.count("articles"));
-      console.log(lsdb.count("categories"));
-      console.log(lsdb.all());
-      console.log(
-        lsdb.find("categories", {
-          where: {
-            title: { $in: ["er"] },
-          },
-        })
-      );
-      console.log(
-        lsdb.findOne("categories", {
+      requirejs(["lsdb"], function(lsdbModule) {
+        const Lsdb = lsdbModule.default;
+        const lsdb = new Lsdb("lsdb");
+        lsdb.collection(["categories", "articles"]);
+        console.log(lsdb.all());
+        lsdb.insert("categories", { data: { title: "Drinks" } });
+        lsdb.insert("categories", { data: { title: "Dinner" } });
+        console.log(lsdb.count("articles"));
+        console.log(lsdb.count("categories"));
+        console.log(lsdb.all());
+        console.log(
+          lsdb.find("categories", {
+            where: {
+              title: { $in: ["er"] },
+            },
+          })
+        );
+        console.log(
+          lsdb.findOne("categories", {
+            where: {
+              _id: { $eq: 1 },
+            },
+          })
+        );
+        lsdb.delete("categories", {
           where: {
             _id: { $eq: 1 },
           },
-        })
-      );
-      lsdb.delete("categories", {
-        where: {
-          _id: { $eq: 1 },
-        },
+        });
+        console.log(lsdb.count("categories"));
       });
-      console.log(lsdb.count("categories"));
     </script>
   </body>
 </html>

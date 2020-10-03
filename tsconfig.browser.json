@@ -1,0 +1,8 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outFile": "./dist.browser/lsdb.js",
+    "module": "amd",
+    "moduleResolution": "node"
+  }
+}
