@@ -16,6 +16,15 @@
       ]
     },
     {
+      "login": "fr0stylo",
+      "name": "Zymantas Maumevicius",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/13507123?v=4",
+      "profile": "https://github.com/fr0stylo",
+"contributions": [
+        "infra",
+        "code"
+      ]},{
+    
       "login": "dekpient",
       "name": "Nitkalya Wiriyanuparb",
       "avatar_url": "https://avatars1.githubusercontent.com/u/717270?v=4",
@@ -29,7 +38,6 @@
       "name": "Connor Ruggles",
       "avatar_url": "https://avatars0.githubusercontent.com/u/14317362?v=4",
       "profile": "https://connorruggles.dev",
-
       "contributions": [
         "infra",
         "code"
