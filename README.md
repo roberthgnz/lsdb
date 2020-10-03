@@ -65,7 +65,8 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tr>
     <td align="center"><a href="https://github.com/aneeshrelan"><img src="https://avatars2.githubusercontent.com/u/17068083?v=4" width="100px;" alt=""/><br /><sub><b>Aneesh Relan</b></sub></a><br /><a href="https://github.com/buzz-js/lsdb/commits?author=aneeshrelan" title="Tests">⚠️</a> <a href="https://github.com/buzz-js/lsdb/commits?author=aneeshrelan" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/fr0stylo"><img src="https://avatars0.githubusercontent.com/u/13507123?v=4" width="100px;" alt=""/><br /><sub><b>Zymantas Maumevicius</b></sub></a><br /><a href="#infra-fr0stylo" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/buzz-js/lsdb/commits?author=fr0stylo" title="Code">💻</a></td>
-  </tr>
+    <td align="center"><a href="https://github.com/dekpient"><img src="https://avatars1.githubusercontent.com/u/717270?v=4" width="100px;" alt=""/><br /><sub><b>Nitkalya Wiriyanuparb</b></sub></a><br /><a href="#infra-dekpient" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/buzz-js/lsdb/commits?author=dekpient" title="Code">💻</a></td>
+    <td align="center"><a href="https://connorruggles.dev"><img src="https://avatars0.githubusercontent.com/u/14317362?v=4" width="100px;" alt=""/><br /><sub><b>Connor Ruggles</b></sub></a><br /><a href="#infra-rugglcon" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/buzz-js/lsdb/commits?author=rugglcon" title="Code">💻</a></td>  </tr>
 </table>
 
 <!-- markdownlint-enable -->
