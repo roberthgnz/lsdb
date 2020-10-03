@@ -20,20 +20,22 @@
       "name": "Zymantas Maumevicius",
       "avatar_url": "https://avatars0.githubusercontent.com/u/13507123?v=4",
       "profile": "https://github.com/fr0stylo",
-"contributions": [
+      "contributions": [
         "infra",
         "code"
-      ]},{
-    
+      ]
+    },
+    {
       "login": "dekpient",
       "name": "Nitkalya Wiriyanuparb",
       "avatar_url": "https://avatars1.githubusercontent.com/u/717270?v=4",
       "profile": "https://github.com/dekpient",
-       "contributions": [
+      "contributions": [
         "test",
         "code"
       ]
-    },{
+    },
+    {
       "login": "rugglcon",
       "name": "Connor Ruggles",
       "avatar_url": "https://avatars0.githubusercontent.com/u/14317362?v=4",
@@ -41,6 +43,15 @@
       "contributions": [
         "infra",
         "code"
+      ]
+    },
+    {
+      "login": "SMAKSS",
+      "name": "MAKSS",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/32557358?v=4",
+      "profile": "https://smakss.github.io/",
+      "contributions": [
+        "doc"
       ]
     }
   ],
