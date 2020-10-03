@@ -1,0 +1,25 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "aneeshrelan",
+      "name": "Aneesh Relan",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/17068083?v=4",
+      "profile": "https://github.com/aneeshrelan",
+      "contributions": [
+        "test",
+        "code"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "lsdb",
+  "projectOwner": "buzz-js",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}
