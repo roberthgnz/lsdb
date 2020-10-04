@@ -98,7 +98,7 @@ describe("lsdb", () => {
     ]);
 
     expect(
-      lsdb.find<{ foo: string }>("test-1", { where: { foo: { $in: ["in"] } } })
+      lsdb.find<{ foo: string }>("test-1", { where: { foo: { $in: ["ri", "er"] } } })
     ).toEqual([
       {
         _id: 2,
