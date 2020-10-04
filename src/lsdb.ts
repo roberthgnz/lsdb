@@ -12,6 +12,15 @@ enum Operator {
   LessThenOrEqual = "$lte",
 }
 
+function makeArray(a: any): Array<any> {
+  if (!a) {
+    return [];
+  }
+  const value = Array.isArray(a) ? a : [a];
+
+  return value;
+}
+
 const OperatorOperations = {
   [Operator.Equals]: (a: any, b: any) => a === b,
   [Operator.NotEquals]: (a: any, b: any) => a !== b,
@@ -20,7 +29,7 @@ const OperatorOperations = {
   [Operator.LessThen]: (a: any, b: any) => a < b,
   [Operator.LessThenOrEqual]: (a: any, b: any) => a <= b,
   [Operator.In]: (a: any, b: Array<any>) =>
-    a && b.some((x: any) => String(a).includes(x)),
+    makeArray(a).some((c) => b.some((x: any) => String(c).includes(x))),
 };
 
 type WhereOperators =

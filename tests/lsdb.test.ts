@@ -74,6 +74,9 @@ describe("lsdb", () => {
     lsdb.insert("test-1", { data: { number: 50 } });
     lsdb.insert("test-1", { data: { foo: "Dinner" } });
     lsdb.insert("test-1", { data: { foo: "Drink" } });
+    lsdb.insert("test-1", {
+      data: { food: ["Pizza", "Cheese"], need: "Drink" },
+    });
 
     expect(
       lsdb.find<{ foo: string }>("test-1", { where: { foo: { $eq: "dummy" } } })
@@ -89,6 +92,16 @@ describe("lsdb", () => {
     ]);
 
     expect(
+      lsdb.find<any>("test-1", { where: { food: { $in: ["Pizza"] } } })
+    ).toEqual([
+      {
+        _id: 4,
+        food: ["Pizza", "Cheese"],
+        need: "Drink",
+      },
+    ]);
+
+    expect(
       lsdb.find<{ foo: string }>("test-1", { where: { foo: { $in: ["bar"] } } })
     ).toEqual([
       {
@@ -98,7 +111,9 @@ describe("lsdb", () => {
     ]);
 
     expect(
-      lsdb.find<{ foo: string }>("test-1", { where: { foo: { $in: ["in"] } } })
+      lsdb.find<{ foo: string }>("test-1", {
+        where: { foo: { $in: ["ri", "er"] } },
+      })
     ).toEqual([
       {
         _id: 2,
@@ -107,9 +122,8 @@ describe("lsdb", () => {
       {
         _id: 3,
         foo: "Drink",
-      }
+      },
     ]);
-
 
     expect(
       lsdb.find<{ number: number }>("test-1", {
@@ -172,7 +186,12 @@ describe("lsdb", () => {
       {
         _id: 3,
         foo: "Drink",
-      }
+      },
+      {
+        _id: 4,
+        food: ["Pizza", "Cheese"],
+        need: "Drink",
+      },
     ]);
   });
 
