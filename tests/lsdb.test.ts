@@ -72,6 +72,8 @@ describe("lsdb", () => {
   test("insert-find", () => {
     lsdb.insert("test-1", { data: { foo: "bar" } });
     lsdb.insert("test-1", { data: { number: 50 } });
+    lsdb.insert("test-1", { data: { foo: "Dinner" } });
+    lsdb.insert("test-1", { data: { foo: "Drink" } });
 
     expect(
       lsdb.find<{ foo: string }>("test-1", { where: { foo: { $eq: "dummy" } } })
@@ -94,6 +96,20 @@ describe("lsdb", () => {
         foo: "bar",
       },
     ]);
+
+    expect(
+      lsdb.find<{ foo: string }>("test-1", { where: { foo: { $in: ["in"] } } })
+    ).toEqual([
+      {
+        _id: 2,
+        foo: "Dinner",
+      },
+      {
+        _id: 3,
+        foo: "Drink",
+      }
+    ]);
+
 
     expect(
       lsdb.find<{ number: number }>("test-1", {
@@ -149,6 +165,14 @@ describe("lsdb", () => {
         _id: 1,
         number: 50,
       },
+      {
+        _id: 2,
+        foo: "Dinner",
+      },
+      {
+        _id: 3,
+        foo: "Drink",
+      }
     ]);
   });
 

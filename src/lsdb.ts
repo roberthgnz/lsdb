@@ -19,7 +19,8 @@ const OperatorOperations = {
   [Operator.GreaterThenOrEqual]: (a: any, b: any) => a >= b,
   [Operator.LessThen]: (a: any, b: any) => a < b,
   [Operator.LessThenOrEqual]: (a: any, b: any) => a <= b,
-  [Operator.In]: (a: any, b: any) => String(a).includes(b),
+  [Operator.In]: (a: any, b: Array<any>) =>
+    a && b.some((x: any) => String(a).includes(x)),
 };
 
 type WhereOperators =
@@ -35,7 +36,7 @@ type WhereArrayOperators = Operator.In;
 type WhereCondition<T extends string, T1> = { [x in T]: T1 };
 type WhereOptions<T> = {
   [fieldKey in keyof T]: Partial<WhereCondition<WhereOperators, any>> &
-  Partial<WhereCondition<WhereArrayOperators, Array<any>>>;
+    Partial<WhereCondition<WhereArrayOperators, Array<any>>>;
 };
 
 /**
@@ -84,6 +85,7 @@ export default class Lsdb {
       const filters = where[field];
       for (const operator in where[field]) {
         const valueToFilterBy = filters[operator as Operator];
+
         dataset = dataset.filter((x: { [x in keyof T]: any }) =>
           OperatorOperations[operator as Operator](x[field], valueToFilterBy)
         );
@@ -197,7 +199,7 @@ export default class Lsdb {
           OperatorOperations[operator as Operator](x[field], valueToFilterBy)
         );
         const entry = dataset[index];
-        dataset.splice(index, 1)
+        dataset.splice(index, 1);
         localStorage.setItem(this.database, JSON.stringify(this.data));
         return entry;
       }
