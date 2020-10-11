@@ -1,6 +1,6 @@
 {
   "name": "lsdb",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "description": "✨Database powered by localStorage",
   "main": "dist/lsdb.js",
   "types": "dist/lsdb.d.ts",
