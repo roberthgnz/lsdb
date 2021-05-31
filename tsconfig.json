@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "es5",
     "module": "amd",
+    "lib": ["es2017", "es7", "es6", "dom"],
     "declaration": true,
     "rootDir": "./src",
     "outDir": "./lib",
