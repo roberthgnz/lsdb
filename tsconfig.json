@@ -1,25 +1,13 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "module": "commonjs",
-    "lib": ["es2017", "es7", "es6", "dom"],
+    "module": "amd",
     "declaration": true,
-    "outDir": "dist",
+    "rootDir": "./src",
+    "outDir": "./lib",
     "strict": true,
-    "esModuleInterop": true,
-    "allowUmdGlobalAccess": true
+    "moduleResolution": "Node"
   },
-  "exclude": ["node_modules", "dist"],
-  "include": ["./src/**/*"],
-
-  // NEW: Options for file/directory watching
-  "watchOptions": {
-    // Use native file system events for files and directories
-    "watchFile": "useFsEvents",
-    "watchDirectory": "useFsEvents",
-
-    // Poll files for updates more frequently
-    // when they're updated a lot.
-    "fallbackPolling": "dynamicPriority"
-  }
+  "include": ["src"],
+  "exclude": ["node_modules", "**/__tests__/*"]
 }

@@ -1,16 +1,4 @@
-interface obj {
-  [key: string]: any;
-}
-
-enum Operator {
-  Equals = "$eq",
-  NotEquals = "$ne",
-  In = "$in",
-  GreaterThen = "$gt",
-  GreaterThenOrEqual = "$gte",
-  LessThen = "$lt",
-  LessThenOrEqual = "$lte",
-}
+import { GenericObject, Operator, WhereOptions } from "./types";
 
 function makeArray(a: any): Array<any> {
   if (!a) {
@@ -32,28 +20,12 @@ const OperatorOperations = {
     makeArray(a).some((c) => b.some((x: any) => String(c).includes(x))),
 };
 
-type WhereOperators =
-  | Operator.Equals
-  | Operator.NotEquals
-  | Operator.GreaterThen
-  | Operator.GreaterThenOrEqual
-  | Operator.LessThen
-  | Operator.LessThenOrEqual;
-
-type WhereArrayOperators = Operator.In;
-
-type WhereCondition<T extends string, T1> = { [x in T]: T1 };
-type WhereOptions<T> = {
-  [fieldKey in keyof T]: Partial<WhereCondition<WhereOperators, any>> &
-    Partial<WhereCondition<WhereArrayOperators, Array<any>>>;
-};
-
 /**
  * @author Roberth González
  */
 export default class Lsdb {
   private database: string;
-  private data: obj;
+  private data: GenericObject;
 
   /**
    *
@@ -180,7 +152,7 @@ export default class Lsdb {
    * @param data - Data of collection
    * @returns Array of created collection
    */
-  update(entity: string, params: obj, data: any): any {
+  update(entity: string, params: GenericObject, data: any): any {
     const key = Object.keys(params)[0];
     const index = this.data[entity].findIndex((i: { [x: string]: any }) => {
       return i[key] === params[key];
