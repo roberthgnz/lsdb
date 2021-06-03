@@ -1,4 +1,16 @@
-import { GenericObject, Operator, WhereOptions } from "./types";
+interface GenericObject {
+  [key: string]: any;
+}
+
+enum Operator {
+  Equals = "$eq",
+  NotEquals = "$ne",
+  In = "$in",
+  GreaterThen = "$gt",
+  GreaterThenOrEqual = "$gte",
+  LessThen = "$lt",
+  LessThenOrEqual = "$lte",
+}
 
 function makeArray(a: any): Array<any> {
   if (!a) {
@@ -18,6 +30,22 @@ const OperatorOperations = {
   [Operator.LessThenOrEqual]: (a: any, b: any) => a <= b,
   [Operator.In]: (a: any, b: Array<any>) =>
     makeArray(a).some((c) => b.some((x: any) => String(c).includes(x))),
+};
+
+type WhereOperators =
+  | Operator.Equals
+  | Operator.NotEquals
+  | Operator.GreaterThen
+  | Operator.GreaterThenOrEqual
+  | Operator.LessThen
+  | Operator.LessThenOrEqual;
+
+type WhereArrayOperators = Operator.In;
+
+type WhereCondition<T extends string, T1> = { [x in T]: T1 };
+type WhereOptions<T> = {
+  [fieldKey in keyof T]: Partial<WhereCondition<WhereOperators, any>> &
+    Partial<WhereCondition<WhereArrayOperators, Array<any>>>;
 };
 
 /**
