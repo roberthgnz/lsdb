@@ -1,4 +1,4 @@
-import Lsdb from "../src/lsdb";
+import Lsdb from "../src/index";
 
 let lsdb: Lsdb;
 

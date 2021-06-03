@@ -2,15 +2,19 @@
   "name": "@reliutg/lsdb",
   "version": "2.2.0",
   "description": "✨Database powered by localStorage",
-  "main": "lib/lsdb.js",
-  "types": "lib/lsdb.d.ts",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "files": [
+    "dist",
+    "dist.browser"
+  ],
   "prepublish": "tsc",
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
   },
   "scripts": {
     "dev": "tsc --watch --project tsconfig.json",
-    "build": "tsc",
+    "build": "tsc && tsc -p tsconfig.browser.json",
     "test": "jest"
   },
   "repository": {
