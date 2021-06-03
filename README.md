@@ -6,7 +6,10 @@
 
 We’ll start by setting up a database:
 
+npm i @reliutg/lsdb
+
 ```
+import Lsdb from "@reliutg/lsdb";
 const lsdb = new Lsdb("lsdb")
 ```
 
