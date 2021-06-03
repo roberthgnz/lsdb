@@ -4,12 +4,12 @@
     "module": "commonjs",
     "lib": ["es2017", "es7", "es6", "dom"],
     "declaration": true,
-    "outDir": "dist",
+    "outDir": "esm",
     "strict": true,
     "esModuleInterop": true,
     "allowUmdGlobalAccess": true
   },
-  "exclude": ["node_modules", "dist"],
+  "exclude": ["node_modules", "esm", "tests"],
   "include": ["./src/**/*"],
 
   // NEW: Options for file/directory watching

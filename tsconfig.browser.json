@@ -1,8 +1,0 @@
-{
-  "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "outFile": "./dist.browser/index.js",
-    "module": "amd",
-    "moduleResolution": "node"
-  }
-}
