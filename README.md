@@ -8,30 +8,30 @@ We’ll start by setting up a database:
 
 npm i @reliutg/lsdb
 
-```
+```js
 import Lsdb from "@reliutg/lsdb";
 const lsdb = new Lsdb("lsdb")
 ```
 
 ## Creating list of collections
- ```
+ ```js
  lsdb.collection(["categories", "articles"])
  ```
 
 ## Inserting
-```
+```js
 lsdb.insert("categories", { data: { title: "Drinks" } })
 lsdb.insert("categories", { data: { title: "Dinner" } })
 ```
 
 ## Getting data
 Get all collections
-```
+```js
 lsdb.all()
 ```
 
 Get a list of documents matching the query
-```
+```js
 lsdb.find("categories", {
     where: {
         title: { $in: ["er"] },
@@ -40,7 +40,7 @@ lsdb.find("categories", {
 ``` 
 
 Get a single document matching the query
-```
+```js
 lsdb.findOne("categories", {
     where: {
         _id: { $eq: 1 },
@@ -50,7 +50,7 @@ lsdb.findOne("categories", {
 
 ## Removing
 Remove a single document matching the query
-```
+```js
 lsdb.delete("categories", {
     where: {
     _id: { $eq: 1 },
