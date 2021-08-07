@@ -10,16 +10,6 @@ declare enum Operator {
     LessThen = "$lt",
     LessThenOrEqual = "$lte"
 }
-declare function makeArray(a: any): Array<any>;
-declare const OperatorOperations: {
-    $eq: (a: any, b: any) => boolean;
-    $ne: (a: any, b: any) => boolean;
-    $gt: (a: any, b: any) => boolean;
-    $gte: (a: any, b: any) => boolean;
-    $lt: (a: any, b: any) => boolean;
-    $lte: (a: any, b: any) => boolean;
-    $in: (a: any, b: Array<any>) => boolean;
-};
 declare type WhereOperators = Operator.Equals | Operator.NotEquals | Operator.GreaterThen | Operator.GreaterThenOrEqual | Operator.LessThen | Operator.LessThenOrEqual;
 declare type WhereArrayOperators = Operator.In;
 declare type WhereCondition<T extends string, T1> = {
@@ -99,3 +89,4 @@ declare class Lsdb {
         where: WhereOptions<T>;
     }): T;
 }
+export default Lsdb;
