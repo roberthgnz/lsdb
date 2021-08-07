@@ -18,18 +18,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/buzz-js/lsdb.git"
+    "url": "git+https://github.com/reliut-g/lsdb.git"
   },
   "keywords": [
     "database",
     "localstorage"
   ],
-  "author": "Roberth González",
+  "author": "Eliut González",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/buzz-js/lsdb/issues"
+    "url": "https://github.com/reliut-g/lsdb/issues"
   },
-  "homepage": "https://github.com/buzz-js/lsdb#readme",
+  "homepage": "https://github.com/reliut-g/lsdb#readme",
   "devDependencies": {
     "@types/jest": "^26.0.23",
     "jest": "^27.0.3",
