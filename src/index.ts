@@ -45,7 +45,7 @@ type WhereArrayOperators = Operator.In;
 type WhereCondition<T extends string, T1> = { [x in T]: T1 };
 type WhereOptions<T> = {
   [fieldKey in keyof T]: Partial<WhereCondition<WhereOperators, any>> &
-    Partial<WhereCondition<WhereArrayOperators, Array<any>>>;
+  Partial<WhereCondition<WhereArrayOperators, Array<any>>>;
 };
 
 /**
@@ -217,3 +217,5 @@ class Lsdb {
     return dataset;
   }
 }
+
+export default Lsdb
