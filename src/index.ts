@@ -48,9 +48,6 @@ type WhereOptions<T> = {
   Partial<WhereCondition<WhereArrayOperators, Array<any>>>;
 };
 
-/**
- * @author Roberth González
- */
 class Lsdb {
   private database: string;
   private data: GenericObject;
