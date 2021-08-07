@@ -39,7 +39,7 @@ lsdb.insert("categories", { data: { title: "Dinner" } });
 Get all collections
 
 ```js
-lsdb.all();
+lsdb.all(); // {categories: Array(2), articles: Array(0)}
 ```
 
 Get a list of documents matching the query
@@ -50,6 +50,15 @@ lsdb.find("categories", {
     title: { $in: ["er"] },
   },
 });
+
+/* 
+* Output
+* [{…}]
+*  0:
+*   title: "Dinner"
+*   _id: 1
+*/
+
 ```
 
 Get a single document matching the query
@@ -59,7 +68,7 @@ lsdb.findOne("categories", {
   where: {
     _id: { $eq: 1 },
   },
-});
+}); // {_id: 1, title: "Dinner"}
 ```
 
 ## Removing
