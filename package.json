@@ -2,11 +2,8 @@
   "name": "@reliutg/lsdb",
   "version": "4.5.0",
   "description": "✨Database powered by localStorage",
-  "main": "./esm/index.js",
-  "module": "./esm/index.js",
-  "exports": {
-    ".": "./esm/index.js"
-  },
+  "main": "./lib/index.js",
+"files": ["lib/*"],
   "prepublish": "tsc",
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
@@ -46,7 +43,7 @@
     ],
     "testPathIgnorePatterns": [
       "/node_modules/",
-      "/build/",
+      "/lib/",
       "/examples/",
       "/.github/"
     ]
