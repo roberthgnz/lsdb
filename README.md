@@ -30,20 +30,19 @@ lsdb.collection(["categories", "articles"]);
 ## Inserting
 
 ```js
-lsdb.insert("categories", { data: { title: "Drinks" } });
-lsdb.insert("categories", { data: { title: "Dinner" } });
+lsdb.insert("categories", { title: "Drinks" });
+lsdb.insert("categories", { title: "Dinner" });
 ```
 
 ## Getting data
 
 Get all collections
-
 ```js
-lsdb.all(); // {categories: Array(2), articles: Array(0)}
+lsdb.all(); 
+// {categories: Array(2), articles: Array(0)}
 ```
 
 Get a list of documents matching the query
-
 ```js
 lsdb.find("categories", {
   where: {
@@ -52,23 +51,21 @@ lsdb.find("categories", {
 });
 
 /* 
-* Output
 * [{…}]
 *  0:
 *   title: "Dinner"
-*   _id: 1
+*   _id: // generated id
 */
 
 ```
 
 Get a single document matching the query
-
 ```js
 lsdb.findOne("categories", {
   where: {
-    _id: { $eq: 1 },
+    _id: { $eq: id },
   },
-}); // {_id: 1, title: "Dinner"}
+}); // {_id: // generated id, title: "Dinner"}
 ```
 
 ## Removing
@@ -78,7 +75,7 @@ Remove a single document matching the query
 ```js
 lsdb.delete("categories", {
   where: {
-    _id: { $eq: 1 },
+    _id: { $eq: id },
   },
 });
 ```
