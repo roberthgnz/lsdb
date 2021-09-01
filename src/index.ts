@@ -57,6 +57,8 @@ type WhereOut = {
   operator: string;
 };
 
+type Obj = Record<string, unknown>;
+
 class Lsdb {
   private database: string;
   private data: GenericObject;
@@ -191,7 +193,7 @@ class Lsdb {
   /**
    * @returns - returns all the collections
    */
-  all(entity?: string): object {
+  all(entity?: string): Obj {
     if (entity) {
       return this.data[entity];
     }

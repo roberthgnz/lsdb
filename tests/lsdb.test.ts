@@ -237,8 +237,10 @@ describe('lsdb', () => {
       number: 20,
     });
 
+    type Obj = Record<string, unknown>;
+
     expect(
-      lsdb.findOne<{}>('test-1', {
+      lsdb.findOne<Obj>('test-1', {
         where: {},
       }),
     ).toEqual([
