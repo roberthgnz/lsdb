@@ -3,4 +3,5 @@
 .prettierrc
 tslint.json
 tsconfig.json
+tests
 src
