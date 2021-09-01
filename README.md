@@ -1,10 +1,7 @@
 # lsdb
 
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-
+[![CI](https://github.com/reliut-g/lsdb/actions/workflows/main.yml/badge.svg)](https://github.com/reliut-g/lsdb/actions/workflows/main.yml)
 [![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
-
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 ✨Database powered by localStorage
 
