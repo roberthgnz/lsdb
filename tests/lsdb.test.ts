@@ -48,36 +48,37 @@ describe('lsdb', () => {
   test('insert-count', () => {
     expect(lsdb.count('test-1')).toEqual(0);
 
-    lsdb.insert('test-1', { data: { foo: 'bar' } });
+    lsdb.insert('test-1', { foo: 'bar' });
 
     expect(lsdb.count('test-1')).toEqual(1);
 
-    lsdb.insert('test-1', { data: { hello: 'world' } });
+    lsdb.insert('test-1', { hello: 'world' });
 
     expect(lsdb.count('test-1')).toEqual(2);
   });
 
   test('insert-all', () => {
-    lsdb.insert('test-1', { data: { hello: 'world' } });
-    lsdb.insert('test-1', { data: { foo: 'bar' } });
+    const hello = lsdb.insert('test-1', { hello: 'world' });
+    const foo = lsdb.insert('test-1', { foo: 'bar' });
 
     lsdb.collection(['test-2', 'test-3']);
 
-    lsdb.insert('test-2', { data: { dummy: 'test' } });
+    const dummy = lsdb.insert('test-2', { dummy: 'test' });
+
     expect(lsdb.all()).toEqual({
       'test-1': [
         {
-          _id: 0,
+          _id: hello._id,
           hello: 'world',
         },
         {
-          _id: 1,
+          _id: foo._id,
           foo: 'bar',
         },
       ],
       'test-2': [
         {
-          _id: 0,
+          _id: dummy._id,
           dummy: 'test',
         },
       ],
@@ -86,46 +87,46 @@ describe('lsdb', () => {
   });
 
   test('insert-delete', () => {
-    lsdb.insert('test-1', { data: { foo: 'bar' } });
-    lsdb.insert('test-1', { data: { hello: 'world' } });
+    const foo = lsdb.insert('test-1', { foo: 'bar' });
+
+    const hello = lsdb.insert('test-1', { hello: 'world' });
 
     lsdb.delete('test-1', {
       where: {
-        _id: { $eq: 0 },
+        _id: { $eq: foo._id },
       },
     });
 
-    expect(lsdb.all()).toEqual({
-      'test-1': [
-        {
-          _id: 1,
-          hello: 'world',
-        },
-      ],
-    });
+    expect(lsdb.all('test-1')).toEqual([
+      {
+        _id: hello._id,
+        hello: 'world',
+      },
+    ]);
   });
 
   test('insert-find', () => {
-    lsdb.insert('test-1', { data: { foo: 'bar' } });
-    lsdb.insert('test-1', { data: { number: 50 } });
-    lsdb.insert('test-1', { data: { foo: 'Dinner' } });
-    lsdb.insert('test-1', { data: { foo: 'Drink' } });
-    lsdb.insert('test-1', {
-      data: { food: ['Pizza', 'Cheese'], need: 'Drink' },
+    const foobar = lsdb.insert('test-1', { foo: 'bar' });
+    const num = lsdb.insert('test-1', { number: 50 });
+    const foodinner = lsdb.insert('test-1', { foo: 'Dinner' });
+    const foodrink = lsdb.insert('test-1', { foo: 'Drink' });
+    const arr = lsdb.insert('test-1', {
+      food: ['Pizza', 'Cheese'],
+      need: 'Drink',
     });
 
     expect(lsdb.find<{ foo: string }>('test-1', { where: { foo: { $eq: 'dummy' } } })).toEqual([]);
 
     expect(lsdb.find<{ foo: string }>('test-1', { where: { foo: { $eq: 'bar' } } })).toEqual([
       {
-        _id: 0,
+        _id: foobar._id,
         foo: 'bar',
       },
     ]);
 
     expect(lsdb.find<any>('test-1', { where: { food: { $in: ['Pizza'] } } })).toEqual([
       {
-        _id: 4,
+        _id: arr._id,
         food: ['Pizza', 'Cheese'],
         need: 'Drink',
       },
@@ -133,7 +134,7 @@ describe('lsdb', () => {
 
     expect(lsdb.find<{ foo: string }>('test-1', { where: { foo: { $in: ['bar'] } } })).toEqual([
       {
-        _id: 0,
+        _id: foobar._id,
         foo: 'bar',
       },
     ]);
@@ -144,11 +145,11 @@ describe('lsdb', () => {
       }),
     ).toEqual([
       {
-        _id: 2,
+        _id: foodinner._id,
         foo: 'Dinner',
       },
       {
-        _id: 3,
+        _id: foodrink._id,
         foo: 'Drink',
       },
     ]);
@@ -159,7 +160,7 @@ describe('lsdb', () => {
       }),
     ).toEqual([
       {
-        _id: 1,
+        _id: num._id,
         number: 50,
       },
     ]);
@@ -170,7 +171,7 @@ describe('lsdb', () => {
       }),
     ).toEqual([
       {
-        _id: 1,
+        _id: num._id,
         number: 50,
       },
     ]);
@@ -181,7 +182,7 @@ describe('lsdb', () => {
       }),
     ).toEqual([
       {
-        _id: 1,
+        _id: num._id,
         number: 50,
       },
     ]);
@@ -192,7 +193,7 @@ describe('lsdb', () => {
       }),
     ).toEqual([
       {
-        _id: 1,
+        _id: num._id,
         number: 50,
       },
     ]);
@@ -202,21 +203,21 @@ describe('lsdb', () => {
         where: { number: { $ne: 20 } },
       }),
     ).toEqual([
-      { _id: 0, foo: 'bar' },
+      { _id: foobar._id, foo: 'bar' },
       {
-        _id: 1,
+        _id: num._id,
         number: 50,
       },
       {
-        _id: 2,
+        _id: foodinner._id,
         foo: 'Dinner',
       },
       {
-        _id: 3,
+        _id: foodrink._id,
         foo: 'Drink',
       },
       {
-        _id: 4,
+        _id: arr._id,
         food: ['Pizza', 'Cheese'],
         need: 'Drink',
       },
@@ -224,15 +225,15 @@ describe('lsdb', () => {
   });
 
   test('insert-findOne', () => {
-    lsdb.insert('test-1', { data: { number: 20 } });
-    lsdb.insert('test-1', { data: { number: 50 } });
+    const n1 = lsdb.insert('test-1', { number: 20 });
+    const n2 = lsdb.insert('test-1', { number: 50 });
 
     expect(
       lsdb.findOne<{ number: number }>('test-1', {
         where: { number: { $lte: 100 } },
       }),
     ).toEqual({
-      _id: 0,
+      _id: n1._id,
       number: 20,
     });
 
@@ -241,29 +242,29 @@ describe('lsdb', () => {
         where: {},
       }),
     ).toEqual([
-      { _id: 0, number: 20 },
-      { _id: 1, number: 50 },
+      { _id: n1._id, number: 20 },
+      { _id: n2._id, number: 50 },
     ]);
   });
 
   test('insert-update', () => {
-    lsdb.insert('test-1', { data: { foo: 'bar' } });
-    lsdb.update('test-1', { foo: 'bar' }, { foo: 'newBar' });
+    lsdb.insert('test-1', { foo: 'bar' });
+    const fooUp = lsdb.update('test-1', { foo: 'bar' }, { foo: 'newBar' });
 
     expect(lsdb.all()).toEqual({
-      'test-1': [{ _id: 0, foo: 'newBar' }],
+      'test-1': [{ _id: fooUp._id, foo: 'newBar' }],
     });
   });
 
   test('collection', () => {
-    console.error = jest.fn();
+    let res = lsdb.collection('hello' as unknown as string[]);
 
-    lsdb.collection('hello' as unknown as string[]);
+    expect(res).toEqual({
+      error: 'Invalid data',
+    });
 
-    expect(console.error).toBeCalledWith('Error: An array was expected');
+    res = lsdb.collection(['hello', true] as unknown as string[]);
 
-    lsdb.collection(['hello', true] as unknown as string[]);
-
-    expect(console.error).toBeCalledWith('Error: All values must be string');
+    expect(res).toEqual({ error: 'All values must be string' });
   });
 });

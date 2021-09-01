@@ -131,6 +131,8 @@ class Lsdb {
 
     const { valueToFilterBy, field, operator } = this.handleWhere(where);
 
+    if (!operator) return dataset;
+
     return dataset.find((x: Query<GenericObject>) =>
       OperatorOperations[operator as Operator](x[field], valueToFilterBy),
     );
@@ -140,16 +142,27 @@ class Lsdb {
    * Creating list of collections
    * @param {Array} data - Contains the name of the collections
    */
-  collection(data: string[]): void {
+  collection(data: string[]): {
+    error?: string;
+    success?: string;
+  } {
     try {
-      if (!Array.isArray(data)) throw new Error('An array was expected');
-      if (data.some((value) => typeof value !== 'string')) {
-        throw new Error('All values must be string');
+      if (!Array.isArray(data)) {
+        return { error: 'Invalid data' };
       }
+      if (data.some((value) => typeof value !== 'string')) {
+        return { error: 'All values must be string' };
+      }
+
       data.forEach((value) => (this.data[value] = []));
       localStorage.setItem(this.database, JSON.stringify(this.data));
+
+      return {
+        success: 'Collection created',
+      };
     } catch (e) {
-      throw e;
+      console.log('ERRRRR', e);
+      return { error: 'mmm' };
     }
   }
 
@@ -159,27 +172,30 @@ class Lsdb {
    * @param data - Data of collection
    * @returns Array of created collection
    */
-  insert(entity: string, { data }: { data: any }) {
-    const docs = [...this.data[entity]];
-    const limit = docs.length - 1;
-    const _id = !docs.length ? 0 : Number(docs[limit]._id) + 1;
+  insert(entity: string, data: any): any {
+    let dataset = [...this.data[entity]];
 
-    docs.push({
-      _id,
-      ...data,
-    });
+    // random string with length of 10
+    const _id = Math.random().toString(36).substr(2, 9);
 
-    this.data[entity] = docs;
+    const newData = { ...data, _id };
+
+    dataset.push(newData);
+
+    this.data[entity] = dataset;
 
     localStorage.setItem(this.database, JSON.stringify(this.data));
 
-    return docs;
+    return newData;
   }
 
   /**
    * @returns - returns all the collections
    */
-  all(): object {
+  all(entity?: string): object {
+    if (entity) {
+      return this.data[entity];
+    }
     return this.data;
   }
 
@@ -210,9 +226,10 @@ class Lsdb {
   delete<T>(entity: string, { where }: { where: WhereOptions<T> }): T {
     let dataset = this.data[entity];
     const { valueToFilterBy, field, operator } = this.handleWhere(where);
-    dataset = dataset.filter(
+    const filtered = dataset.filter(
       (x: Query<GenericObject>) => !OperatorOperations[operator as Operator](x[field], valueToFilterBy),
     );
+    this.data[entity] = filtered;
     localStorage.setItem(this.database, JSON.stringify(this.data));
     return dataset;
   }
