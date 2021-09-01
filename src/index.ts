@@ -80,15 +80,10 @@ class Lsdb {
       if (!where[field]) continue;
       const filters = where[field];
       for (const operator in filters) {
-        if (operator === '$in') {
-          return {
-            valueToFilterBy: filters[operator],
-            field,
-            operator,
-          };
+        if (Object.prototype.hasOwnProperty.call(filters, operator)) {
+          const valueToFilterBy = filters[operator as Operator];
+          return { field, operator, valueToFilterBy };
         }
-        const valueToFilterBy = filters[operator as Operator];
-        return { valueToFilterBy, field, operator };
       }
     }
     return {
