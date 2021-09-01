@@ -1,0 +1,6 @@
+.all-contributorsrc
+.github
+.prettierrc
+tslint.json
+tsconfig.json
+src

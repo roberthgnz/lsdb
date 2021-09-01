@@ -1,24 +1,17 @@
 {
   "compilerOptions": {
-    "module": "es2015",
-    "target": "es2015",
-    "lib": ["es2017", "es7", "es6", "dom"],
-    "declaration": true,
-    "outDir": "lib",
-    "strict": true,
+    "module": "esnext",
+    "target": "es2019",
+    "lib": ["esnext", "DOM"],
     "esModuleInterop": true,
-    "allowUmdGlobalAccess": true
+    "strictNullChecks": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "declaration": true,
+    "outDir": "./lib",
+    "strict": true
   },
-  "exclude": ["node_modules", "lib", "tests"],
-  "include": ["./src/**/*"],
-  // NEW: Options for file/directory watching
-  "watchOptions": {
-    // Use native file system events for files and directories
-    "watchFile": "useFsEvents",
-    "watchDirectory": "useFsEvents",
-
-    // Poll files for updates more frequently
-    // when they're updated a lot.
-    "fallbackPolling": "dynamicPriority"
-  }
+  "include": ["src"],
+  "exclude": ["node_modules", "tests"]
 }

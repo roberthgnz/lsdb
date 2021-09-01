@@ -3,16 +3,16 @@ interface GenericObject {
 }
 
 enum Operator {
-  Equals = "$eq",
-  NotEquals = "$ne",
-  In = "$in",
-  GreaterThen = "$gt",
-  GreaterThenOrEqual = "$gte",
-  LessThen = "$lt",
-  LessThenOrEqual = "$lte",
+  Equals = '$eq',
+  NotEquals = '$ne',
+  In = '$in',
+  GreaterThen = '$gt',
+  GreaterThenOrEqual = '$gte',
+  LessThen = '$lt',
+  LessThenOrEqual = '$lte',
 }
 
-function makeArray(a: any): Array<any> {
+function makeArray(a: any): any[] {
   if (!a) {
     return [];
   }
@@ -28,8 +28,11 @@ const OperatorOperations = {
   [Operator.GreaterThenOrEqual]: (a: any, b: any) => a >= b,
   [Operator.LessThen]: (a: any, b: any) => a < b,
   [Operator.LessThenOrEqual]: (a: any, b: any) => a <= b,
-  [Operator.In]: (a: any, b: Array<any>) =>
-    makeArray(a).some((c) => b.some((x: any) => String(c).includes(x))),
+  [Operator.In]: (a: any, b: any[]) => makeArray(a).some((c) => b.some((x: any) => String(c).includes(x))),
+};
+
+type Query<T> = {
+  [P in keyof T]?: T[P];
 };
 
 type WhereOperators =
@@ -45,7 +48,13 @@ type WhereArrayOperators = Operator.In;
 type WhereCondition<T extends string, T1> = { [x in T]: T1 };
 type WhereOptions<T> = {
   [fieldKey in keyof T]: Partial<WhereCondition<WhereOperators, any>> &
-  Partial<WhereCondition<WhereArrayOperators, Array<any>>>;
+    Partial<WhereCondition<WhereArrayOperators, any[]>>;
+};
+
+type WhereOut = {
+  valueToFilterBy: any;
+  field: string;
+  operator: string;
 };
 
 class Lsdb {
@@ -63,7 +72,30 @@ class Lsdb {
       localStorage.setItem(database, JSON.stringify({}));
     }
 
-    this.data = JSON.parse(localStorage.getItem(database) || "{}");
+    this.data = JSON.parse(localStorage.getItem(database) || '{}');
+  }
+
+  private handleWhere(where: WhereOptions<any>): WhereOut {
+    for (const field in where) {
+      if (!where[field]) continue;
+      const filters = where[field];
+      for (const operator in filters) {
+        if (operator === '$in') {
+          return {
+            valueToFilterBy: filters[operator],
+            field,
+            operator,
+          };
+        }
+        const valueToFilterBy = filters[operator as Operator];
+        return { valueToFilterBy, field, operator };
+      }
+    }
+    return {
+      valueToFilterBy: '',
+      field: '',
+      operator: '',
+    };
   }
 
   /**
@@ -81,22 +113,14 @@ class Lsdb {
    * @param where - Options which consist of mongo-like definition
    * @returns {Array|Error} - Array of matched data or thrown an error in case of invalid where clause
    */
-  find<T>(
-    entity: string,
-    { where }: { where: WhereOptions<T> }
-  ): T[] | undefined {
+  find<T>(entity: string, { where }: { where: WhereOptions<T> }): T[] | undefined {
     let dataset = this.data[entity];
 
-    for (const field in where) {
-      const filters = where[field];
-      for (const operator in where[field]) {
-        const valueToFilterBy = filters[operator as Operator];
+    const { valueToFilterBy, field, operator }: WhereOut = this.handleWhere(where);
 
-        dataset = dataset.filter((x: { [x in keyof T]: any }) =>
-          OperatorOperations[operator as Operator](x[field], valueToFilterBy)
-        );
-      }
-    }
+    dataset = dataset.filter((x: Query<GenericObject>) =>
+      OperatorOperations[operator as Operator](x[field], valueToFilterBy),
+    );
 
     return dataset;
   }
@@ -108,19 +132,13 @@ class Lsdb {
    * @returns {Object|Error} - Object of matched data or thrown an error in case of invalid where clause
    */
   findOne<T>(entity: string, { where }: { where: WhereOptions<T> }): T {
-    let dataset = this.data[entity];
+    const dataset = this.data[entity];
 
-    for (const field in where) {
-      const filters = where[field];
-      for (const operator in where[field]) {
-        const valueToFilterBy = filters[operator as Operator];
-        return dataset.find((x: { [x in keyof T]: any }) =>
-          OperatorOperations[operator as Operator](x[field], valueToFilterBy)
-        );
-      }
-    }
+    const { valueToFilterBy, field, operator } = this.handleWhere(where);
 
-    return dataset;
+    return dataset.find((x: Query<GenericObject>) =>
+      OperatorOperations[operator as Operator](x[field], valueToFilterBy),
+    );
   }
 
   /**
@@ -129,14 +147,14 @@ class Lsdb {
    */
   collection(data: string[]): void {
     try {
-      if (!Array.isArray(data)) throw new Error("An array was expected");
-      if (data.some((value) => typeof value !== "string")) {
-        throw new Error("All values must be string");
+      if (!Array.isArray(data)) throw new Error('An array was expected');
+      if (data.some((value) => typeof value !== 'string')) {
+        throw new Error('All values must be string');
       }
       data.forEach((value) => (this.data[value] = []));
       localStorage.setItem(this.database, JSON.stringify(this.data));
     } catch (e) {
-      console.error(e.name + ": " + e.message);
+      throw e;
     }
   }
 
@@ -147,9 +165,9 @@ class Lsdb {
    * @returns Array of created collection
    */
   insert(entity: string, { data }: { data: any }) {
-    let docs = [...this.data[entity]];
-    let limit = docs.length - 1;
-    let _id = !docs.length ? 0 : Number(docs[limit]["_id"]) + 1;
+    const docs = [...this.data[entity]];
+    const limit = docs.length - 1;
+    const _id = !docs.length ? 0 : Number(docs[limit]._id) + 1;
 
     docs.push({
       _id,
@@ -182,7 +200,7 @@ class Lsdb {
     const index = this.data[entity].findIndex((i: { [x: string]: any }) => {
       return i[key] === params[key];
     });
-    let doc = this.data[entity][index];
+    const doc = this.data[entity][index];
     this.data[entity][index] = { ...doc, ...data };
     localStorage.setItem(this.database, JSON.stringify(this.data));
     return doc;
@@ -196,23 +214,13 @@ class Lsdb {
    */
   delete<T>(entity: string, { where }: { where: WhereOptions<T> }): T {
     let dataset = this.data[entity];
-
-    for (const field in where) {
-      const filters = where[field];
-      for (const operator in where[field]) {
-        const valueToFilterBy = filters[operator as Operator];
-        const index = dataset.findIndex((x: { [x in keyof T]: any }) =>
-          OperatorOperations[operator as Operator](x[field], valueToFilterBy)
-        );
-        const entry = dataset[index];
-        dataset.splice(index, 1);
-        localStorage.setItem(this.database, JSON.stringify(this.data));
-        return entry;
-      }
-    }
-
+    const { valueToFilterBy, field, operator } = this.handleWhere(where);
+    dataset = dataset.filter(
+      (x: Query<GenericObject>) => !OperatorOperations[operator as Operator](x[field], valueToFilterBy),
+    );
+    localStorage.setItem(this.database, JSON.stringify(this.data));
     return dataset;
   }
 }
 
-export default Lsdb
+export default Lsdb;
