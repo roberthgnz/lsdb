@@ -161,8 +161,7 @@ class Lsdb {
         success: 'Collection created',
       };
     } catch (e) {
-      console.log('ERRRRR', e);
-      return { error: 'mmm' };
+      return { error: e.message };
     }
   }
 
@@ -173,7 +172,7 @@ class Lsdb {
    * @returns Array of created collection
    */
   insert(entity: string, data: any): any {
-    let dataset = [...this.data[entity]];
+    const dataset = [...this.data[entity]];
 
     // random string with length of 10
     const _id = Math.random().toString(36).substr(2, 9);
@@ -224,7 +223,7 @@ class Lsdb {
    * @returns {Object|Error} - Object of matched data or thrown an error in case of invalid where clause
    */
   delete<T>(entity: string, { where }: { where: WhereOptions<T> }): T {
-    let dataset = this.data[entity];
+    const dataset = this.data[entity];
     const { valueToFilterBy, field, operator } = this.handleWhere(where);
     const filtered = dataset.filter(
       (x: Query<GenericObject>) => !OperatorOperations[operator as Operator](x[field], valueToFilterBy),
