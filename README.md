@@ -10,12 +10,18 @@
 ```bash
 npm i @reliutg/lsdb
 ```
+## With Skypack
+no npm install needed!
+```html
+<script type="module">
+  import Lsdb from 'https://cdn.skypack.dev/@reliutg/lsdb';
+</script>
+```
 
-We’ll start by setting up a database:
+## We’ll start by setting up a database:
 
 ```js
-import Lsdb from "@reliutg/lsdb";
-const lsdb = new Lsdb("lsdb");
+const lsdb = new Lsdb('dbname')
 ```
 
 ## Creating list of collections
