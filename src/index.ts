@@ -161,7 +161,7 @@ class Lsdb {
         success: 'Collection created',
       };
     } catch (e) {
-      return { error: e.message };
+      return { error: 'Something went wrong' };
     }
   }
 
