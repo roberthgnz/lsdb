@@ -1,6 +1,6 @@
 {
   "name": "@reliutg/lsdb",
-  "version": "4.6.1",
+  "version": "4.6.2",
   "description": "✨Database powered by localStorage",
   "main": "./lib/index.js",
   "types": "lib/index.d.ts",
@@ -44,8 +44,8 @@
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
     "jest": "^27.1.0",
+    "prettier": "^2.3.2",
     "ts-jest": "^27.0.5",
-    "typescript": "^4.3.2",
-    "prettier": "^2.3.2"
+    "typescript": "^4.4.2"
   }
 }
