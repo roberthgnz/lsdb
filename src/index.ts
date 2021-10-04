@@ -1,6 +1,13 @@
-interface GenericObject {
+type GenericObject = {
   [key: string]: any;
-}
+};
+
+type CollectionItem = {
+  _id: string;
+  [key: string]: any;
+};
+
+type Collection = Array<CollectionItem>;
 
 enum Operator {
   Equals = '$eq',
@@ -57,14 +64,11 @@ type WhereOut = {
   operator: string;
 };
 
-type Obj = Record<string, unknown>;
-
 class Lsdb {
   private database: string;
-  private data: GenericObject;
+  private collections: { [key: string]: Collection[] };
 
   /**
-   *
    * @param {String} database - The "Database" name
    */
   constructor(database: string) {
@@ -74,7 +78,7 @@ class Lsdb {
       localStorage.setItem(database, JSON.stringify({}));
     }
 
-    this.data = JSON.parse(localStorage.getItem(database) || '{}');
+    this.collections = JSON.parse(localStorage.getItem(database) || '{}');
   }
 
   private handleWhere(where: WhereOptions<any>): WhereOut {
@@ -105,7 +109,7 @@ class Lsdb {
    * @returns {Number} - Number of data within the collection
    */
   count(entity: string): number {
-    return this.data[entity].length;
+    return this.collections[entity].length;
   }
 
   /**
@@ -114,10 +118,10 @@ class Lsdb {
    * @param where - Options which consist of mongo-like definition
    * @returns {Array|Error} - Array of matched data or thrown an error in case of invalid where clause
    */
-  find<T>(entity: string, { where }: { where: WhereOptions<T> }): T[] | undefined {
-    let dataset = this.data[entity];
+  find<CollectionItem>(entity: string, { where }: { where: WhereOptions<CollectionItem> }): Collection[] | undefined {
+    let dataset = this.collections[entity];
 
-    const { valueToFilterBy, field, operator }: WhereOut = this.handleWhere(where);
+    const { valueToFilterBy, field, operator } = this.handleWhere(where);
 
     dataset = dataset.filter((x: Query<GenericObject>) =>
       OperatorOperations[operator as Operator](x[field], valueToFilterBy),
@@ -132,8 +136,8 @@ class Lsdb {
    * @param where - Options which consist of mongo-like definition
    * @returns {Object|Error} - Object of matched data or thrown an error in case of invalid where clause
    */
-  findOne<T>(entity: string, { where }: { where: WhereOptions<T> }): T {
-    const dataset = this.data[entity];
+  findOne<CollectionItem>(entity: string, { where }: { where: WhereOptions<CollectionItem> }): any {
+    const dataset = this.collections[entity];
 
     const { valueToFilterBy, field, operator } = this.handleWhere(where);
 
@@ -166,10 +170,10 @@ class Lsdb {
       }
 
       data.forEach((value) => {
-        this.data[value] = replace ? [] : this.data[value];
+        this.collections[value] = replace ? [] : this.collections[value];
       });
 
-      localStorage.setItem(this.database, JSON.stringify(this.data));
+      localStorage.setItem(this.database, JSON.stringify(this.collections));
 
       return {
         success: 'Collection created',
@@ -186,18 +190,20 @@ class Lsdb {
    * @returns Array of created collection
    */
   insert(entity: string, data: any): any {
-    const dataset = [...this.data[entity]];
+    const collection = this.collections[entity];
 
-    // random string with length of 10
     const _id = Math.random().toString(36).substr(2, 9);
 
-    const newData = { ...data, _id };
+    const newData = {
+      ...data,
+      _id,
+    };
 
-    dataset.push(newData);
+    const dataset = collection.concat(newData);
 
-    this.data[entity] = dataset;
+    this.collections[entity] = dataset;
 
-    localStorage.setItem(this.database, JSON.stringify(this.data));
+    localStorage.setItem(this.database, JSON.stringify(this.collections));
 
     return newData;
   }
@@ -205,11 +211,11 @@ class Lsdb {
   /**
    * @returns - returns all the collections
    */
-  all(entity?: string): Obj {
+  all(entity?: string): Collection[] | { [key: string]: Collection[] } {
     if (entity) {
-      return this.data[entity];
+      return this.collections[entity];
     }
-    return this.data;
+    return this.collections;
   }
 
   /**
@@ -222,15 +228,15 @@ class Lsdb {
   update(entity: string, params: GenericObject, data: any): any {
     const key = Object.keys(params)[0];
 
-    const index = this.data[entity].findIndex((i: { [x: string]: any }) => {
+    const index = this.collections[entity].findIndex((i: { [x: string]: any }) => {
       return i[key] === params[key];
     });
 
-    const doc = this.data[entity][index];
+    const doc = this.collections[entity][index];
 
-    this.data[entity][index] = { ...doc, ...data };
+    this.collections[entity][index] = { ...doc, ...data };
 
-    localStorage.setItem(this.database, JSON.stringify(this.data));
+    localStorage.setItem(this.database, JSON.stringify(this.collections));
 
     return doc;
   }
@@ -241,8 +247,8 @@ class Lsdb {
    * @param where - Options which consist of mongo-like definition
    * @returns {Object|Error} - Object of matched data or thrown an error in case of invalid where clause
    */
-  delete<T>(entity: string, { where }: { where: WhereOptions<T> }): T {
-    const dataset = this.data[entity];
+  delete<CollectionItem>(entity: string, { where }: { where: WhereOptions<CollectionItem> }): Collection[] | undefined {
+    const dataset = this.collections[entity];
 
     const { valueToFilterBy, field, operator } = this.handleWhere(where);
 
@@ -250,9 +256,9 @@ class Lsdb {
       (x: Query<GenericObject>) => !OperatorOperations[operator as Operator](x[field], valueToFilterBy),
     );
 
-    this.data[entity] = filtered;
+    this.collections[entity] = filtered;
 
-    localStorage.setItem(this.database, JSON.stringify(this.data));
+    localStorage.setItem(this.database, JSON.stringify(this.collections));
 
     return dataset;
   }
