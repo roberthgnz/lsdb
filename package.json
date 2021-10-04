@@ -2,12 +2,10 @@
   "name": "@reliutg/lsdb",
   "version": "4.6.5",
   "description": "✨Database powered by localStorage",
+  "type": "module",
   "main": "./lib/index.js",
-  "types": "lib/index.d.ts",
+  "types": "./lib/index.d.ts",
   "module": "./lib/index.js",
-  "exports": {
-    ".": "./lib/index.js"
-  },
   "files": [
     "lib/**/*"
   ],
