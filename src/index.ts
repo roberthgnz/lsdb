@@ -142,9 +142,10 @@ class Lsdb {
 
   /**
    * Creating list of collections
-   * @param {Array} data - Contains the name of the collections
+   * @param {Array} data Contains the name of the collections
+   * @param {boolean} replace If set to true, previously created collections will be deleted.
    */
-  collection(data: string[]): {
+  collection(data: string[], replace: boolean = false): {
     error?: string;
     success?: string;
   } {
@@ -156,7 +157,10 @@ class Lsdb {
         return { error: 'All values must be string' };
       }
 
-      data.forEach((value) => (this.data[value] = []));
+      data.forEach((value) => {
+        this.data[value] = replace ? [] : this.data[value];
+      });
+      
       localStorage.setItem(this.database, JSON.stringify(this.data));
 
       return {
