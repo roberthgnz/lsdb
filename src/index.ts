@@ -80,14 +80,18 @@ class Lsdb {
   private handleWhere(where: WhereOptions<any>): WhereOut {
     for (const field in where) {
       if (!where[field]) continue;
+
       const filters = where[field];
+
       for (const operator in filters) {
         if (Object.prototype.hasOwnProperty.call(filters, operator)) {
           const valueToFilterBy = filters[operator as Operator];
+
           return { field, operator, valueToFilterBy };
         }
       }
     }
+
     return {
       valueToFilterBy: '',
       field: '',
@@ -145,7 +149,10 @@ class Lsdb {
    * @param {Array} data Contains the name of the collections
    * @param {boolean} replace If set to true, previously created collections will be deleted.
    */
-  collection(data: string[], replace: boolean = false): {
+  collection(
+    data: string[],
+    replace = false,
+  ): {
     error?: string;
     success?: string;
   } {
@@ -153,6 +160,7 @@ class Lsdb {
       if (!Array.isArray(data)) {
         return { error: 'Invalid data' };
       }
+
       if (data.some((value) => typeof value !== 'string')) {
         return { error: 'All values must be string' };
       }
@@ -160,7 +168,7 @@ class Lsdb {
       data.forEach((value) => {
         this.data[value] = replace ? [] : this.data[value];
       });
-      
+
       localStorage.setItem(this.database, JSON.stringify(this.data));
 
       return {
@@ -213,12 +221,17 @@ class Lsdb {
    */
   update(entity: string, params: GenericObject, data: any): any {
     const key = Object.keys(params)[0];
+
     const index = this.data[entity].findIndex((i: { [x: string]: any }) => {
       return i[key] === params[key];
     });
+
     const doc = this.data[entity][index];
+
     this.data[entity][index] = { ...doc, ...data };
+
     localStorage.setItem(this.database, JSON.stringify(this.data));
+
     return doc;
   }
 
@@ -230,12 +243,17 @@ class Lsdb {
    */
   delete<T>(entity: string, { where }: { where: WhereOptions<T> }): T {
     const dataset = this.data[entity];
+
     const { valueToFilterBy, field, operator } = this.handleWhere(where);
+
     const filtered = dataset.filter(
       (x: Query<GenericObject>) => !OperatorOperations[operator as Operator](x[field], valueToFilterBy),
     );
+
     this.data[entity] = filtered;
+
     localStorage.setItem(this.database, JSON.stringify(this.data));
+
     return dataset;
   }
 }
