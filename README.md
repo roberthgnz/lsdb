@@ -5,8 +5,6 @@
 
 ✨Database powered by localStorage
 
-[LIVE DEMO 🔥](https://codesandbox.io/s/relaxed-lewin-zmgsi?file=/src/index.js)
-
 ## Installation
 
 ```bash
