@@ -22,18 +22,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/reliut-g/lsdb.git"
+    "url": "git+https://github.com/eliutgon/lsdb.git"
   },
   "keywords": [
     "database",
     "localstorage"
   ],
-  "author": "Eliut González (https://github.com/reliut-g)",
+  "author": "Eliut González (https://github.com/eliutgon)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/reliut-g/lsdb/issues"
+    "url": "https://github.com/eliutgon/lsdb/issues"
   },
-  "homepage": "https://github.com/reliut-g/lsdb#readme",
+  "homepage": "https://github.com/eliutgon/lsdb#readme",
   "devDependencies": {
     "@types/jest": "27.0.2",
     "@typescript-eslint/eslint-plugin": "4.32.0",
