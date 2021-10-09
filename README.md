@@ -6,7 +6,14 @@
 [![Stars](https://img.shields.io/github/stars/eliutgon/lsdb)](https://github.com/eliutgon/lsdb)
 [![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg)](#contributors-)
 
-✨Database powered by localStorage
+Database powered by localStorage with JSON definition
+
+## Features
+
+- 📦 Tree-shakeable
+- ⚡ Fast
+- ✨ Lightweight
+- ❤️ Strongly typed
 
 ## Installation
 
