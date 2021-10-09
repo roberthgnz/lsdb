@@ -115,16 +115,16 @@ describe('lsdb', () => {
       need: 'Drink',
     });
 
-    expect(lsdb.find<{ foo: string }>('test-1', { where: { foo: { $eq: 'dummy' } } })).toEqual([]);
+    expect(lsdb.find('test-1', { where: { foo: { $eq: 'dummy' } } })).toEqual([]);
 
-    expect(lsdb.find<{ foo: string }>('test-1', { where: { foo: { $eq: 'bar' } } })).toEqual([
+    expect(lsdb.find('test-1', { where: { foo: { $eq: 'bar' } } })).toEqual([
       {
         _id: foobar._id,
         foo: 'bar',
       },
     ]);
 
-    expect(lsdb.find<any>('test-1', { where: { food: { $in: ['Pizza'] } } })).toEqual([
+    expect(lsdb.find('test-1', { where: { food: { $in: ['Pizza'] } } })).toEqual([
       {
         _id: arr._id,
         food: ['Pizza', 'Cheese'],
@@ -132,7 +132,7 @@ describe('lsdb', () => {
       },
     ]);
 
-    expect(lsdb.find<{ foo: string }>('test-1', { where: { foo: { $in: ['bar'] } } })).toEqual([
+    expect(lsdb.find('test-1', { where: { foo: { $in: ['bar'] } } })).toEqual([
       {
         _id: foobar._id,
         foo: 'bar',
@@ -140,7 +140,7 @@ describe('lsdb', () => {
     ]);
 
     expect(
-      lsdb.find<{ foo: string }>('test-1', {
+      lsdb.find('test-1', {
         where: { foo: { $in: ['ri', 'er'] } },
       }),
     ).toEqual([
@@ -155,7 +155,7 @@ describe('lsdb', () => {
     ]);
 
     expect(
-      lsdb.find<{ number: number }>('test-1', {
+      lsdb.find('test-1', {
         where: { number: { $eq: 50 } },
       }),
     ).toEqual([
@@ -166,7 +166,7 @@ describe('lsdb', () => {
     ]);
 
     expect(
-      lsdb.find<{ number: number }>('test-1', {
+      lsdb.find('test-1', {
         where: { number: { $gt: 20 } },
       }),
     ).toEqual([
@@ -177,7 +177,7 @@ describe('lsdb', () => {
     ]);
 
     expect(
-      lsdb.find<{ number: number }>('test-1', {
+      lsdb.find('test-1', {
         where: { number: { $gte: 30 } },
       }),
     ).toEqual([
@@ -188,7 +188,7 @@ describe('lsdb', () => {
     ]);
 
     expect(
-      lsdb.find<{ number: number }>('test-1', {
+      lsdb.find('test-1', {
         where: { number: { $lt: 100 } },
       }),
     ).toEqual([
@@ -199,7 +199,7 @@ describe('lsdb', () => {
     ]);
 
     expect(
-      lsdb.find<{ number: number }>('test-1', {
+      lsdb.find('test-1', {
         where: { number: { $ne: 20 } },
       }),
     ).toEqual([
@@ -229,7 +229,7 @@ describe('lsdb', () => {
     const n2 = lsdb.insert('test-1', { number: 50 });
 
     expect(
-      lsdb.findOne<{ number: number }>('test-1', {
+      lsdb.findOne('test-1', {
         where: { number: { $lte: 100 } },
       }),
     ).toEqual({
@@ -237,16 +237,11 @@ describe('lsdb', () => {
       number: 20,
     });
 
-    type Obj = Record<string, unknown>;
-
     expect(
-      lsdb.findOne<Obj>('test-1', {
+      lsdb.findOne('test-1', {
         where: {},
       }),
-    ).toEqual([
-      { _id: n1._id, number: 20 },
-      { _id: n2._id, number: 50 },
-    ]);
+    ).toEqual(undefined);
   });
 
   test('insert-update', () => {
