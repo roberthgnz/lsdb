@@ -53,11 +53,20 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "vvscode",
+      "name": "Vasiliy Vanchuk",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6904368?v=4",
+      "profile": "http://bit.ly/vvscodeli",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
   "projectName": "lsdb",
-  "projectOwner": "buzz-js",
+  "projectOwner": "eliutgon",
   "repoType": "github",
   "repoHost": "https://github.com",
   "skipCi": true
