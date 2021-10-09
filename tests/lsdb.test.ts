@@ -132,6 +132,58 @@ describe('lsdb', () => {
       },
     ]);
 
+    expect(lsdb.find('test-1', { where: { food: { $in: { values: ['Piz'], strict: true } } } })).toEqual([]);
+
+
+    expect(lsdb.find('test-1', { where: { food: { $nin: ["Ch"] } } })).toEqual([
+      { _id: foobar._id, foo: 'bar' },
+      { _id: num._id, number: 50 },
+      { _id: foodinner._id, foo: 'Dinner' },
+      { _id: foodrink._id, foo: 'Drink' },
+    ]);
+
+    expect(lsdb.find('test-1', { where: { food: { $nin: { values: ["Ch"], strict: true } } }})).toEqual([
+      { _id: foobar._id, foo: 'bar' },
+      { _id: num._id, number: 50 },
+      { _id: foodinner._id, foo: 'Dinner' },
+      { _id: foodrink._id, foo: 'Drink' },
+      {
+        _id: arr._id,
+        food: ['Pizza', 'Cheese'],
+        need: 'Drink',
+      },
+    ]);
+
+    expect(lsdb.find('test-1', { where: { food: { $nin: ["Drink", "Pizza"] } } })).toEqual([
+      { _id: foobar._id, foo: 'bar' },
+      { _id: num._id, number: 50 },
+      { _id: foodinner._id, foo: 'Dinner' },
+      { _id: foodrink._id, foo: 'Drink' },
+    ]);
+
+    expect(lsdb.find('test-1', { where: { number: { $nin: [50] } } })).toEqual([
+      { _id: foobar._id, foo: 'bar' },
+      { _id: foodinner._id, foo: 'Dinner' },
+      { _id: foodrink._id, foo: 'Drink' },
+      {
+        _id: arr._id,
+        food: ['Pizza', 'Cheese'],
+        need: 'Drink',
+      },
+    ]);
+
+    expect(lsdb.find('test-1', { where: { uknown_field: { $nin: ["any_value"] } } })).toEqual([
+      { _id: foobar._id, foo: 'bar' },
+      { _id: num._id, number: 50 },
+      { _id: foodinner._id, foo: 'Dinner' },
+      { _id: foodrink._id, foo: 'Drink' },
+      {
+        _id: arr._id,
+        food: ['Pizza', 'Cheese'],
+        need: 'Drink',
+      },
+    ]);
+
     expect(lsdb.find('test-1', { where: { foo: { $in: ['bar'] } } })).toEqual([
       {
         _id: foobar._id,
