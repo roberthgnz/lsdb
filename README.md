@@ -13,8 +13,11 @@
 ```bash
 npm i @reliutg/lsdb
 ```
+
 ## With Skypack
+
 no npm install needed!
+
 ```html
 <script type="module">
   import Lsdb from 'https://cdn.skypack.dev/@reliutg/lsdb';
@@ -24,62 +27,93 @@ no npm install needed!
 ## We’ll start by setting up a database:
 
 ```js
-const lsdb = new Lsdb('dbname')
+const lsdb = new Lsdb('dbname');
 ```
 
 ## Creating list of collections
 
 ```js
-lsdb.collection(["categories", "articles"]);
+lsdb.collection(['categories', 'articles']);
 ```
 
 ## Inserting
 
 ```js
-lsdb.insert("categories", { title: "Drinks" });
-lsdb.insert("categories", { title: "Dinner" });
+lsdb.insert('categories', { title: 'Drinks' });
+lsdb.insert('categories', { title: 'Dinner' });
+lsdb.insert('categories', { title: 'Breakfast' });
+lsdb.insert('articles', { title: 'Coffee', category: 'Drinks' });
 ```
 
 ## Getting data
 
-Get all collections
+Get single collection or all collection entries
+
 ```js
-lsdb.all(); 
+lsdb.all();
 // {categories: Array(2), articles: Array(0)}
+
+lsdb.all('categories');
+// [{title: 'Drinks'}, {title: 'Dinner'}, {title: 'Breakfast'}]
 ```
 
-Get a list of documents matching the query
+### Available operators
+
+Based on [MongoDB](https://docs.mongodb.com/manual/reference/operator/query/#query-selectors) query selectors
+
+- `$eq` - Equal
+- `$in` - In
+- `$nin` - Not in
+- `$ne` - Not equal
+- `$gt` - Greater than
+- `$gte` - Greater than or equal
+- `$lt` - Less than
+- `$lte` - Less than or equal
+
+### Get a list of documents matching the query
+
 ```js
-lsdb.find("categories", {
+lsdb.find('categories', {
   where: {
-    title: { $in: ["er"] },
+    title: { $in: ['er'] },
   },
 });
 
-/* 
-* [{…}]
-*  0:
-*   title: "Dinner"
-*   _id: // generated id
-*/
-
+lsdb.find('articles', {
+  where: {
+    category: { $eq: 'Drinks' },
+  },
+});
 ```
 
-Get a single document matching the query
+### Get a single document matching the query
+
 ```js
-lsdb.findOne("categories", {
+lsdb.findOne('categories', {
   where: {
     _id: { $eq: id },
   },
-}); // {_id: // generated id, title: "Dinner"}
+});
+```
+
+## Updating
+
+### Update a single document matching the query
+
+```js
+lsdb.update('categories', {
+  where: {
+    _id: { $eq: id },
+  },
+});
 ```
 
 ## Removing
 
-Remove a single document matching the query
+### Remove a single document matching the query
 
 ```js
-lsdb.delete("categories", {
+lsdb.delete('categories', {
   where: {
     _id: { $eq: id },
   },
