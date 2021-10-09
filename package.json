@@ -9,8 +9,9 @@
     "lib/**/*"
   ],
   "scripts": {
-    "dev": "tsc --watch --project tsconfig.json",
-    "build": "tsc",
+    "dev": "esbuild --watch src/index.ts --format=esm --outdir=lib --sourcemap",
+    "build": "esbuild src/index.ts --format=esm --outdir=lib --minify && npm run types",
+    "types": "tsc --declaration --emitDeclarationOnly",
     "test": "jest --config jestconfig.json",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint src --ext .ts --fix",
