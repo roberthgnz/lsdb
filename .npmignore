@@ -1,7 +1,10 @@
-.all-contributorsrc
 .github
-.prettierrc
-tslint.json
-tsconfig.json
 tests
 src
+.all-contributorsrc
+.eslintignore
+.eslintrc.js
+.prettierrc
+jestconfig.json
+tsconfig.json
+package-lock.json
