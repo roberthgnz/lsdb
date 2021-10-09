@@ -5,6 +5,7 @@
     "lib": ["ESNext", "DOM"],
     "strictNullChecks": true,
     "moduleResolution": "node",
+    "esModuleInterop": true,
     "skipLibCheck": true,
     "declaration": true,
     "outDir": "./lib",
