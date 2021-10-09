@@ -170,7 +170,7 @@ class Lsdb {
       }
 
       data.forEach((value) => {
-        this.collections[value] = replace ? [] : this.collections[value];
+        this.collections[value] = replace ? [] : this.collections[value] || [];
       });
 
       localStorage.setItem(this.database, JSON.stringify(this.collections));
