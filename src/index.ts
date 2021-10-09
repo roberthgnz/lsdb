@@ -1,13 +1,13 @@
 type GenericObject = {
-  [key: string]: any;
+  [key: string]: unknown;
 };
 
-type CollectionItem = {
-  _id: string;
-  [key: string]: any;
+type Document = {
+  _id?: string;
+  [key: string]: unknown;
 };
 
-type Collection = Array<CollectionItem>;
+type Collection = Document[];
 
 enum Operator {
   Equals = '$eq',
@@ -19,7 +19,7 @@ enum Operator {
   LessThenOrEqual = '$lte',
 }
 
-function makeArray(a: any): any[] {
+function makeArray(a: unknown): unknown[] {
   if (!a) {
     return [];
   }
@@ -66,10 +66,10 @@ type WhereOut = {
 
 class Lsdb {
   private database: string;
-  private collections: { [key: string]: Collection[] };
+  private collections: { [key: string]: Collection };
 
   /**
-   * @param {String} database - The "Database" name
+   * @param {String} database The "Database" name
    */
   constructor(database: string) {
     this.database = database;
@@ -81,7 +81,7 @@ class Lsdb {
     this.collections = JSON.parse(localStorage.getItem(database) || '{}');
   }
 
-  private handleWhere(where: WhereOptions<any>): WhereOut {
+  private handleWhere(where: WhereOptions<Document>): WhereOut {
     for (const field in where) {
       if (!where[field]) continue;
 
@@ -105,43 +105,41 @@ class Lsdb {
 
   /**
    * Count the number of entries in the collection
-   * @param {String} entity - Name of collection
-   * @returns {Number} - Number of data within the collection
+   * @param {String} entity Name of collection
+   * @returns {Number} Number of data within the collection
    */
   count(entity: string): number {
-    return this.collections[entity].length;
+    return Object.keys(this.collections[entity]).length;
   }
 
   /**
    * Get multiple entries
-   * @param {String} entity - Name of collection
-   * @param where - Options which consist of mongo-like definition
-   * @returns {Array|Error} - Array of matched data or thrown an error in case of invalid where clause
+   * @param {String} entity Name of collection
+   * @param {WhereOptions} where Options which consist of mongo-like definition
+   * @returns {Collection|undefined} Collection or undefined
    */
-  find<CollectionItem>(entity: string, { where }: { where: WhereOptions<CollectionItem> }): Collection[] | undefined {
-    let dataset = this.collections[entity];
-
-    const { valueToFilterBy, field, operator } = this.handleWhere(where);
-
-    dataset = dataset.filter((x: Query<GenericObject>) =>
-      OperatorOperations[operator as Operator](x[field], valueToFilterBy),
-    );
-
-    return dataset;
-  }
-
-  /**
-   * Get single entry
-   * @param {String} entity - Name of collection
-   * @param where - Options which consist of mongo-like definition
-   * @returns {Object|Error} - Object of matched data or thrown an error in case of invalid where clause
-   */
-  findOne<CollectionItem>(entity: string, { where }: { where: WhereOptions<CollectionItem> }): any {
+  find(entity: string, { where }: { where: WhereOptions<Document> }): Collection | undefined {
     const dataset = this.collections[entity];
 
     const { valueToFilterBy, field, operator } = this.handleWhere(where);
 
-    if (!operator) return dataset;
+    return dataset.filter((x: Query<GenericObject>) =>
+      OperatorOperations[operator as Operator](x[field], valueToFilterBy),
+    );
+  }
+
+  /**
+   * Get single entry
+   * @param {String} entity Name of collection
+   * @param where Options which consist of mongo-like definition
+   * @returns {Document|undefined} Single entry or undefined
+   */
+  findOne(entity: string, { where }: { where: WhereOptions<Document> }): Document | undefined {
+    const dataset = this.collections[entity];
+
+    const { valueToFilterBy, field, operator } = this.handleWhere(where);
+
+    if (!operator) return undefined;
 
     return dataset.find((x: Query<GenericObject>) =>
       OperatorOperations[operator as Operator](x[field], valueToFilterBy),
@@ -152,6 +150,7 @@ class Lsdb {
    * Creating list of collections
    * @param {Array} data Contains the name of the collections
    * @param {boolean} replace If set to true, previously created collections will be deleted.
+   * @returns Success or failure
    */
   collection(
     data: string[],
@@ -185,33 +184,34 @@ class Lsdb {
 
   /**
    * Creating collection entry
-   * @param {String} entity - Name of collection
-   * @param data - Data of collection
-   * @returns Array of created collection
+   * @param {String} entity Name of collection
+   * @param {Document} data Data of collection
+   * @returns {Document} Single entry
    */
-  insert(entity: string, data: any): any {
+  insert(entity: string, data: Document): Document {
     const collection = this.collections[entity];
 
     const _id = Math.random().toString(36).substr(2, 9);
 
-    const newData = {
+    const entry = {
       ...data,
       _id,
     };
 
-    const dataset = collection.concat(newData);
+    const dataset = [...collection, entry];
 
     this.collections[entity] = dataset;
 
     localStorage.setItem(this.database, JSON.stringify(this.collections));
 
-    return newData;
+    return entry;
   }
 
   /**
-   * @returns - returns all the collections
+   * Get single collection or all collection entries
+   * @returns {Array} Collection or entries of collection
    */
-  all(entity?: string): Collection[] | { [key: string]: Collection[] } {
+  all(entity?: string): Collection | { [key: string]: Collection } {
     if (entity) {
       return this.collections[entity];
     }
@@ -220,15 +220,15 @@ class Lsdb {
 
   /**
    * Update collection entry
-   * @param {String} entity - Name of collection
-   * @param {Object} params - Parameters to change
-   * @param data - Data of collection
-   * @returns Array of created collection
+   * @param {String} entity Name of collection
+   * @param {Document} params Parameters to change
+   * @param {Document} data Data of collection
+   * @returns {Document} Updated collection entry
    */
-  update(entity: string, params: GenericObject, data: any): any {
+  update(entity: string, params: Document, data: Document): Document {
     const key = Object.keys(params)[0];
 
-    const index = this.collections[entity].findIndex((i: { [x: string]: any }) => {
+    const index = this.collections[entity].findIndex((i) => {
       return i[key] === params[key];
     });
 
@@ -243,11 +243,11 @@ class Lsdb {
 
   /**
    * Delete entry from collection
-   * @param {String} entity - Name of collection
-   * @param where - Options which consist of mongo-like definition
-   * @returns {Object|Error} - Object of matched data or thrown an error in case of invalid where clause
+   * @param {String} entity Name of collection
+   * @param where Options which consist of mongo-like definition
+   * @returns {Collection} Collection without deleted entry
    */
-  delete<CollectionItem>(entity: string, { where }: { where: WhereOptions<CollectionItem> }): Collection[] | undefined {
+  delete<Document>(entity: string, { where }: { where: WhereOptions<Document> }): Collection {
     const dataset = this.collections[entity];
 
     const { valueToFilterBy, field, operator } = this.handleWhere(where);
@@ -260,7 +260,7 @@ class Lsdb {
 
     localStorage.setItem(this.database, JSON.stringify(this.collections));
 
-    return dataset;
+    return filtered;
   }
 }
 
