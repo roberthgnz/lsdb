@@ -36,23 +36,15 @@ const OperatorOperations = {
   [Operator.GreaterThenOrEqual]: (a: any, b: any) => a >= b,
   [Operator.LessThen]: (a: any, b: any) => a < b,
   [Operator.LessThenOrEqual]: (a: any, b: any) => a <= b,
-  [Operator.In]: (a: any, b: any[], options?: { strict: boolean }) => {
-    const predicate = options?.strict
-      ? (c: any) => b.some((x: any) => c === x)
-      : (c: any) => b.some((x: any) => String(c).includes(x));
-    return makeArray(a).some(predicate);
+  [Operator.In]: (a: any, b: any[]) => {
+    const aArray = makeArray(a);
+    const bArray = makeArray(b);
+    return bArray.some((value) => aArray.includes(value));
   },
-  [Operator.NotIn]: (a: any, b: any[], options?: { strict: boolean }) => {
-    const aList = makeArray(a);
-
-    if (aList.length === 0) {
-      return true;
-    }
-    const predicate = options?.strict
-      ? (c: any) => b.some((x: any) => c === x)
-      : (c: any) => b.some((x: any) => String(c).includes(x));
-
-    return !makeArray(a).some(predicate);
+  [Operator.NotIn]: (a: any, b: any[]) => {
+    const aArray = makeArray(a);
+    const bArray = makeArray(b);
+    return bArray.some((value) => !aArray.includes(value));
   },
 };
 
@@ -73,27 +65,13 @@ type WhereArrayOperators = Operator.In | Operator.NotIn;
 type WhereCondition<T extends string, T1> = { [x in T]: T1 };
 type WhereOptions<T> = {
   [fieldKey in keyof T]: Partial<WhereCondition<WhereOperators, any>> &
-    (
-      | Partial<WhereCondition<WhereArrayOperators, any[]>>
-      | Partial<
-          WhereCondition<
-            WhereArrayOperators,
-            {
-              values: any[];
-              strict: true;
-            }
-          >
-        >
-    );
+    Partial<WhereCondition<WhereArrayOperators, any[]>>;
 };
 
 type WhereOut = {
   valueToFilterBy: any;
   field: string;
   operator: string;
-  options?: {
-    strict: boolean;
-  };
 };
 
 class Lsdb {
@@ -127,13 +105,7 @@ class Lsdb {
 
           const valueToFilterBy = areOptionsProvided ? filters[operator].values : filters[operator];
 
-          const options = areOptionsProvided
-            ? {
-                strict: Boolean(filters[operator].strict),
-              }
-            : undefined;
-
-          return { field, operator, valueToFilterBy, options };
+          return { field, operator, valueToFilterBy };
         }
       }
     }
@@ -163,10 +135,10 @@ class Lsdb {
   find(entity: string, { where, limit }: { where: WhereOptions<Document>; limit?: number }): Collection | undefined {
     const dataset = this.collections[entity];
 
-    const { valueToFilterBy, field, operator, options } = this.handleWhere(where);
+    const { valueToFilterBy, field, operator } = this.handleWhere(where);
 
     return dataset
-      .filter((x: Query<GenericObject>) => OperatorOperations[operator as Operator](x[field], valueToFilterBy, options))
+      .filter((x: Query<GenericObject>) => OperatorOperations[operator as Operator](x[field], valueToFilterBy))
       .slice(0, limit);
   }
 
@@ -292,10 +264,10 @@ class Lsdb {
   delete<Document>(entity: string, { where }: { where: WhereOptions<Document> }): Collection {
     const dataset = this.collections[entity];
 
-    const { valueToFilterBy, field, operator, options } = this.handleWhere(where);
+    const { valueToFilterBy, field, operator } = this.handleWhere(where);
 
     const filtered = dataset.filter(
-      (x: Query<GenericObject>) => !OperatorOperations[operator as Operator](x[field], valueToFilterBy, options),
+      (x: Query<GenericObject>) => !OperatorOperations[operator as Operator](x[field], valueToFilterBy),
     );
 
     this.collections[entity] = filtered;
