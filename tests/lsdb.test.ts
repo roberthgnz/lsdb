@@ -142,6 +142,19 @@ describe('lsdb', () => {
       { _id: foodrink._id, foo: 'Drink' },
     ]);
 
+    expect(lsdb.find('test-1', { where: { food: { $nin: ["Ch"] } }, limit : 10 })).toEqual([
+      { _id: foobar._id, foo: 'bar' },
+      { _id: num._id, number: 50 },
+      { _id: foodinner._id, foo: 'Dinner' },
+      { _id: foodrink._id, foo: 'Drink' },
+    ]);
+
+    expect(lsdb.find('test-1', { where: { food: { $nin: ["Ch"] } }, limit : 3 })).toEqual([
+      { _id: foobar._id, foo: 'bar' },
+      { _id: num._id, number: 50 },
+      { _id: foodinner._id, foo: 'Dinner' },
+    ]);
+
     expect(lsdb.find('test-1', { where: { food: { $nin: { values: ["Ch"], strict: true } } }})).toEqual([
       { _id: foobar._id, foo: 'bar' },
       { _id: num._id, number: 50 },
