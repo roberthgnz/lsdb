@@ -152,14 +152,14 @@ class Lsdb {
    * @param {WhereOptions} where Options which consist of mongo-like definition
    * @returns {Collection|undefined} Collection or undefined
    */
-  find(entity: string, { where }: { where: WhereOptions<Document> }): Collection | undefined {
+  find(entity: string, { where, limit }: { where: WhereOptions<Document>, limit?: number }): Collection | undefined {
     const dataset = this.collections[entity];
 
     const { valueToFilterBy, field, operator, options } = this.handleWhere(where);
-
-    return dataset.filter((x: Query<GenericObject>) =>
-      OperatorOperations[operator as Operator](x[field], valueToFilterBy, options),
-    );
+    
+      return dataset.filter((x: Query<GenericObject>) =>
+        OperatorOperations[operator as Operator](x[field], valueToFilterBy, options),
+      ).slice(0,limit);
   }
 
   /**
