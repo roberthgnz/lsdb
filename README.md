@@ -82,7 +82,7 @@ Based on [MongoDB](https://docs.mongodb.com/manual/reference/operator/query/#que
 ```js
 lsdb.find('categories', {
   where: {
-    title: { $in: ['er'] },
+    category: { $in: ['Drinks'] },
   },
 });
 
