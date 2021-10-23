@@ -198,16 +198,12 @@ class Lsdb {
         }
       }
 
-      if (replace) {
-        this.collections = {};
-      }
-
       if (Array.isArray(data)) {
         data.forEach((collection) => {
-          this.collections[collection] = [];
+          this.collections[collection] = replace ? [] : this.collections[collection] || [];
         });
       } else {
-        this.collections[data] = [];
+        this.collections[data] = replace ? [] : this.collections[data] || [];
       }
 
       localStorage.setItem(this.database, JSON.stringify(this.collections));
