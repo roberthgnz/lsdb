@@ -40,7 +40,10 @@ const lsdb = new Lsdb('dbname');
 ## Creating list of collections
 
 ```js
+// Create multiple collections
 lsdb.collection(['categories', 'articles']);
+// Create single collection
+lsdb.collection('categories');
 ```
 
 ## Inserting
@@ -53,11 +56,7 @@ lsdb.insert('articles', { title: 'Coffee', category: 'Drinks' });
 ```
 
 ```js
-lsdb.insertMany('categories', [
-  { title: 'Drinks' },
-  { title: 'Dinner' },
-  { title: 'Breakfast' }
-]);
+lsdb.insertMany('categories', [{ title: 'Drinks' }, { title: 'Dinner' }, { title: 'Breakfast' }]);
 ```
 
 ## Getting data
