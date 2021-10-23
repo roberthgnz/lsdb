@@ -52,6 +52,14 @@ lsdb.insert('categories', { title: 'Breakfast' });
 lsdb.insert('articles', { title: 'Coffee', category: 'Drinks' });
 ```
 
+```js
+lsdb.insertMany('categories', [
+  { title: 'Drinks' },
+  { title: 'Dinner' },
+  { title: 'Breakfast' }
+]);
+```
+
 ## Getting data
 
 Get single collection or all collection entries
