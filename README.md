@@ -100,8 +100,8 @@ lsdb.find('articles', {
 
 | Field   | Type     | Description             | Default     | Required |
 | ------- | -------- | ----------------------- | ----------- | -------- |
-| `where` | Object   | Filter by object        | `undefined` | `false`  |
-| `sort`  | `string` | Sort by field name      | `undefined` | `false`  |
+| `where` | `Object`   | Filter by object        | `undefined` | `false`  |
+| `sort`  | `Object` | Sort by field name      | `undefined` | `false`  |
 | `limit` | `number` | Limit number of results | `undefined` | `false`  |
 | `skip`  | `number` | Skip number of results  | `0`         | `false`  |
 
