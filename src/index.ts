@@ -173,37 +173,43 @@ class Lsdb {
 
   /**
    * Creating list of collections
-   * @param {Array} data Contains the name of the collections
+   * @param {String|Array} data Contains the name of the collection/s
    * @param {boolean} replace If set to true, previously created collections will be deleted.
    * @returns Success or failure
    */
-  collection(
-    data: string[],
-    replace = false,
-  ): {
-    error?: string;
-    success?: string;
-  } {
+  collection(data: string | string[], replace = false): unknown {
     try {
-      if (!Array.isArray(data)) {
-        return { error: 'Invalid data' };
+      if (Array.isArray(data)) {
+        data.forEach((x) => {
+          if (typeof x !== 'string') {
+            throw new Error('All values must be strings');
+          }
+        });
+      } else {
+        if (typeof data !== 'string') {
+          throw new Error('Value must be string');
+        }
       }
 
-      if (data.some((value) => typeof value !== 'string')) {
-        return { error: 'All values must be string' };
+      if (replace) {
+        this.collections = {};
       }
 
-      data.forEach((value) => {
-        this.collections[value] = replace ? [] : this.collections[value] || [];
-      });
+      if (Array.isArray(data)) {
+        data.forEach((collection) => {
+          this.collections[collection] = [];
+        });
+      } else {
+        this.collections[data] = [];
+      }
 
       localStorage.setItem(this.database, JSON.stringify(this.collections));
 
       return {
-        success: 'Collection created',
+        status: 'success',
       };
     } catch (e) {
-      return { error: 'Something went wrong' };
+      return e;
     }
   }
 
