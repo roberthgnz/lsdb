@@ -150,6 +150,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://connorruggles.dev"><img src="https://avatars0.githubusercontent.com/u/14317362?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Connor Ruggles</b></sub></a><br /><a href="#infra-rugglcon" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="https://github.com/eliutgon/lsdb/commits?author=rugglcon" title="Code">💻</a></td>
     <td align="center"><a href="https://smakss.github.io/"><img src="https://avatars0.githubusercontent.com/u/32557358?v=4?s=100" width="100px;" alt=""/><br /><sub><b>MAKSS</b></sub></a><br /><a href="https://github.com/eliutgon/lsdb/commits?author=SMAKSS" title="Documentation">📖</a></td>
     <td align="center"><a href="http://bit.ly/vvscodeli"><img src="https://avatars.githubusercontent.com/u/6904368?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Vasiliy Vanchuk</b></sub></a><br /><a href="https://github.com/eliutgon/lsdb/commits?author=vvscode" title="Code">💻</a></td>
+    <td align="center"><a href="https://www.linkedin.com/in/pablo-marcelo-bianco/"><img src="https://avatars.githubusercontent.com/u/358126?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Pablo</b></sub></a><br /><a href="https://github.com/eliutgon/lsdb/commits?author=marce1994" title="Code">💻</a></td>
   </tr>
 </table>
 
