@@ -304,15 +304,15 @@ describe('lsdb', () => {
   });
 
   test('collection', () => {
-    let res = lsdb.collection('hello' as unknown as string[]);
+    let res = lsdb.collection('hello');
 
     expect(res).toEqual({
-      error: 'Invalid data',
+      status: 'success',
     });
 
     res = lsdb.collection(['hello', true] as unknown as string[]);
 
-    expect(res).toEqual({ error: 'All values must be string' });
+    expect(res).toEqual(Error('All values must be strings'));
   });
 
   test('insert-many', () => {
@@ -321,7 +321,7 @@ describe('lsdb', () => {
     const hello = lsdb.insertMany('test-2', [{ hello: 'hello' }, { foo: 'foo' }]);
 
     expect(lsdb.all()).toEqual({
-      "test-1": [],
+      'test-1': [],
       'test-2': [
         {
           _id: hello[0]._id,
@@ -331,7 +331,7 @@ describe('lsdb', () => {
           _id: hello[1]._id,
           foo: 'foo',
         },
-      ]
+      ],
     });
   });
 });
