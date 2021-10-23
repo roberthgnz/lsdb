@@ -117,6 +117,17 @@ class Lsdb {
     };
   }
 
+  private generateEntryId(data: Document) : Document {
+    const _id = Math.random().toString(36).substr(2, 9);
+
+    const entry = {
+      ...data,
+      _id
+    }
+
+    return entry;
+  }
+
   /**
    * Count the number of entries in the collection
    * @param {String} entity Name of collection
@@ -205,12 +216,7 @@ class Lsdb {
   insert(entity: string, data: Document): Document {
     const collection = this.collections[entity];
 
-    const _id = Math.random().toString(36).substr(2, 9);
-
-    const entry = {
-      ...data,
-      _id,
-    };
+    const entry = this.generateEntryId(data);
 
     const dataset = [...collection, entry];
 
@@ -219,6 +225,26 @@ class Lsdb {
     localStorage.setItem(this.database, JSON.stringify(this.collections));
 
     return entry;
+  }
+
+  /**
+   * Creating many collection entries
+   * @param {String} entity Name of collection
+   * @param {Document[]} data Data of collection
+   * @returns {Document[]} Multiple entries
+   */
+  insertMany(entity: string, data: Document[]): Document[] {
+    const collection = this.collections[entity];
+
+    const entries = data.map(data => this.generateEntryId(data));
+
+    const dataset = [...collection, ...entries];
+
+    this.collections[entity] = dataset;
+
+    localStorage.setItem(this.database, JSON.stringify(this.collections));
+
+    return entries;
   }
 
   /**

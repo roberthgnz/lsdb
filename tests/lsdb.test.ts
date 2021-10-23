@@ -314,4 +314,24 @@ describe('lsdb', () => {
 
     expect(res).toEqual({ error: 'All values must be string' });
   });
+
+  test('insert-many', () => {
+    lsdb.collection(['test-2']);
+
+    const hello = lsdb.insertMany('test-2', [{ hello: 'hello' }, { foo: 'foo' }]);
+
+    expect(lsdb.all()).toEqual({
+      "test-1": [],
+      'test-2': [
+        {
+          _id: hello[0]._id,
+          hello: 'hello',
+        },
+        {
+          _id: hello[1]._id,
+          foo: 'foo',
+        },
+      ]
+    });
+  });
 });
