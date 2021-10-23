@@ -117,13 +117,13 @@ class Lsdb {
     };
   }
 
-  private generateEntryId(data: Document) : Document {
+  private createEntry(data: Document): Document {
     const _id = Math.random().toString(36).substr(2, 9);
 
     const entry = {
       ...data,
-      _id
-    }
+      _id,
+    };
 
     return entry;
   }
@@ -216,7 +216,7 @@ class Lsdb {
   insert(entity: string, data: Document): Document {
     const collection = this.collections[entity];
 
-    const entry = this.generateEntryId(data);
+    const entry = this.createEntry(data);
 
     const dataset = [...collection, entry];
 
@@ -236,7 +236,7 @@ class Lsdb {
   insertMany(entity: string, data: Document[]): Document[] {
     const collection = this.collections[entity];
 
-    const entries = data.map(data => this.generateEntryId(data));
+    const entries = data.map((data) => this.createEntry(data));
 
     const dataset = [...collection, ...entries];
 
