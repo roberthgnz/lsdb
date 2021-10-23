@@ -1,7 +1,3 @@
-type GenericObject = {
-  [key: string]: unknown;
-};
-
 type Document = {
   _id?: string;
   [key: string]: unknown;
@@ -48,10 +44,6 @@ const OperatorOperations = {
   },
 };
 
-type Query<T> = {
-  [P in keyof T]?: T[P];
-};
-
 type WhereOperators =
   | Operator.Equals
   | Operator.NotEquals
@@ -66,6 +58,15 @@ type WhereCondition<T extends string, T1> = { [x in T]: T1 };
 type WhereOptions<T> = {
   [fieldKey in keyof T]: Partial<WhereCondition<WhereOperators, any>> &
     Partial<WhereCondition<WhereArrayOperators, any[]>>;
+};
+type FindOptions<T> = {
+  where?: WhereOptions<T>;
+  limit?: number;
+  skip?: number;
+  sort?: {
+    field: keyof T;
+    order: 'asc' | 'desc';
+  };
 };
 
 type WhereOut = {
@@ -91,7 +92,9 @@ class Lsdb {
     this.collections = JSON.parse(localStorage.getItem(database) || '{}');
   }
 
-  private handleWhere(where: WhereOptions<Document>): WhereOut {
+  private handleWhere(where: WhereOptions<Document> | undefined): WhereOut {
+    if (!where) return { valueToFilterBy: undefined, field: '', operator: '' };
+
     for (const field in where) {
       if (!where[field]) continue;
 
@@ -110,11 +113,7 @@ class Lsdb {
       }
     }
 
-    return {
-      valueToFilterBy: '',
-      field: '',
-      operator: '',
-    };
+    return { valueToFilterBy: undefined, field: '', operator: '' };
   }
 
   private createEntry(data: Document): Document {
@@ -140,17 +139,27 @@ class Lsdb {
   /**
    * Get multiple entries
    * @param {String} entity Name of collection
-   * @param {WhereOptions} where Options which consist of mongo-like definition
+   * @param {FindOptions} options Options, where, limit, skip, sort
    * @returns {Collection|undefined} Collection or undefined
    */
-  find(entity: string, { where, limit }: { where: WhereOptions<Document>; limit?: number }): Collection | undefined {
+  find(entity: string, { where, limit, skip = 0, sort }: FindOptions<Document>): Collection | undefined {
     const dataset = this.collections[entity];
 
-    const { valueToFilterBy, field, operator } = this.handleWhere(where);
+    let result = dataset.slice(skip, limit);
 
-    return dataset
-      .filter((x: Query<GenericObject>) => OperatorOperations[operator as Operator](x[field], valueToFilterBy))
-      .slice(0, limit);
+    if (where) {
+      const { field, operator, valueToFilterBy } = this.handleWhere(where);
+      result = result.filter((x) => OperatorOperations[operator as Operator](x[field], valueToFilterBy));
+    }
+
+    if (sort) {
+      const { field, order } = sort;
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      result = result.sort((a, b) => (order === 'asc' ? a[field] - b[field] : b[field] - a[field]));
+    }
+
+    return result;
   }
 
   /**
@@ -166,9 +175,7 @@ class Lsdb {
 
     if (!operator) return undefined;
 
-    return dataset.find((x: Query<GenericObject>) =>
-      OperatorOperations[operator as Operator](x[field], valueToFilterBy),
-    );
+    return dataset.find((x) => OperatorOperations[operator as Operator](x[field], valueToFilterBy));
   }
 
   /**
@@ -293,14 +300,12 @@ class Lsdb {
    * @param where Options which consist of mongo-like definition
    * @returns {Collection} Collection without deleted entry
    */
-  delete<Document>(entity: string, { where }: { where: WhereOptions<Document> }): Collection {
+  delete(entity: string, { where }: { where: WhereOptions<Document> }): Collection {
     const dataset = this.collections[entity];
 
     const { valueToFilterBy, field, operator } = this.handleWhere(where);
 
-    const filtered = dataset.filter(
-      (x: Query<GenericObject>) => !OperatorOperations[operator as Operator](x[field], valueToFilterBy),
-    );
+    const filtered = dataset.filter((x) => !OperatorOperations[operator as Operator](x[field], valueToFilterBy));
 
     this.collections[entity] = filtered;
 

@@ -272,6 +272,19 @@ describe('lsdb', () => {
         need: 'Drink',
       },
     ]);
+
+    expect(
+      lsdb.find('test-1', {
+        where: { number: { $ne: 20 } },
+        limit: 2,
+      }),
+    ).toEqual([
+      { _id: foobar._id, foo: 'bar' },
+      {
+        _id: num._id,
+        number: 50,
+      },
+    ]);
   });
 
   test('insert-findOne', () => {
@@ -333,5 +346,21 @@ describe('lsdb', () => {
         },
       ],
     });
+  });
+
+  test('inser-many-sort', () => {
+    lsdb.collection(['test-2'], true);
+
+    lsdb.insertMany('test-2', [
+      { item: { category: 'cake', type: 'chiffon' }, amount: 10 },
+      { item: { category: 'cookies', type: 'chocolate chip' }, amount: 50 },
+      { item: { category: 'cookies', type: 'chocolate chip' }, amount: 15 },
+      { item: { category: 'cake', type: 'lemon' }, amount: 30 },
+      { item: { category: 'cake', type: 'carrot' }, amount: 20 },
+      { item: { category: 'brownies', type: 'blondie' }, amount: 10 },
+      { name: "Jane's Deli", borough: 'Brooklyn' },
+    ]);
+
+    expect(lsdb.find('test-2', { limit: 3, sort: { field: 'amount', order: 'desc' } })?.length).toEqual(3);
   });
 });

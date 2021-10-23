@@ -71,20 +71,7 @@ lsdb.all('categories');
 // [{title: 'Drinks'}, {title: 'Dinner'}, {title: 'Breakfast'}]
 ```
 
-### Available operators
-
-Based on [MongoDB](https://docs.mongodb.com/manual/reference/operator/query/#query-selectors) query selectors
-
-- `$eq` - Equal
-- `$in` - In
-- `$nin` - Not in
-- `$ne` - Not equal
-- `$gt` - Greater than
-- `$gte` - Greater than or equal
-- `$lt` - Less than
-- `$lte` - Less than or equal
-
-### Get a list of documents matching the query
+Get a list of documents
 
 ```js
 lsdb.find('categories', {
@@ -98,9 +85,37 @@ lsdb.find('articles', {
     category: { $eq: 'Drinks' },
   },
 });
+
+lsdb.find('articles', {
+  sort: 'title',
+  limit: 2,
+  skip: 1,
+});
 ```
 
-### Get a single document matching the query
+### Find Options
+
+| Field   | Type     | Description             | Default     | Required |
+| ------- | -------- | ----------------------- | ----------- | -------- |
+| `where` | Object   | Filter by object        | `undefined` | `false`  |
+| `sort`  | `string` | Sort by field name      | `undefined` | `false`  |
+| `limit` | `number` | Limit number of results | `undefined` | `false`  |
+| `skip`  | `number` | Skip number of results  | `0`         | `false`  |
+
+### Available operators for where
+
+Based on [MongoDB](https://docs.mongodb.com/manual/reference/operator/query/#query-selectors) query selectors
+
+- `$eq` - Equal
+- `$in` - In
+- `$nin` - Not in
+- `$ne` - Not equal
+- `$gt` - Greater than
+- `$gte` - Greater than or equal
+- `$lt` - Less than
+- `$lte` - Less than or equal
+
+Get a single document matching the query
 
 ```js
 lsdb.findOne('categories', {
@@ -112,7 +127,7 @@ lsdb.findOne('categories', {
 
 ## Updating
 
-### Update a single document matching the query
+Update a single document matching the query
 
 ```js
 lsdb.update('categories', {
@@ -124,7 +139,7 @@ lsdb.update('categories', {
 
 ## Removing
 
-### Remove a single document matching the query
+Remove a single document matching the query
 
 ```js
 lsdb.delete('categories', {
