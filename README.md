@@ -87,7 +87,10 @@ lsdb.find('articles', {
 });
 
 lsdb.find('articles', {
-  sort: 'title',
+  sort: {
+    field: 'title',
+    order: 'asc'
+  },
   limit: 2,
   skip: 1,
 });
