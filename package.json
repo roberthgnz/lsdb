@@ -37,7 +37,7 @@
   "homepage": "https://github.com/eliutgon/lsdb#readme",
   "devDependencies": {
     "@types/jest": "27.4.1",
-    "@typescript-eslint/eslint-plugin": "5.13.0",
+    "@typescript-eslint/eslint-plugin": "5.14.0",
     "@typescript-eslint/parser": "5.14.0",
     "esbuild": "0.14.25",
     "eslint": "8.10.0",
