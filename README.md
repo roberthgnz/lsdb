@@ -6,7 +6,7 @@
 [![Stars](https://img.shields.io/github/stars/eliutgon/lsdb)](https://github.com/eliutgon/lsdb)
 [![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg)](#contributors-)
 
-LocalStorage database powered by with JSON definition
+Typed localStorage database powered by  with JSON definition
 
 ## Features
 
