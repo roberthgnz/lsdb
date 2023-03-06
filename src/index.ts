@@ -1,3 +1,33 @@
+import { Operator, Collection, WhereQuery, Entry, WhereOut, FindOptions } from './types';
+
+const OperatorOperations = {
+  [Operator.Equals]: (a: any, b: any) => a === b,
+  [Operator.NotEquals]: (a: any, b: any) => a !== b,
+  [Operator.GreaterThen]: (a: any, b: any) => a > b,
+  [Operator.GreaterThenOrEqual]: (a: any, b: any) => a >= b,
+  [Operator.LessThen]: (a: any, b: any) => a < b,
+  [Operator.LessThenOrEqual]: (a: any, b: any) => a <= b,
+  [Operator.In]: (a: any, b: any[]) => {
+    const aArray = makeArray(a);
+    const bArray = makeArray(b);
+    return bArray.some((value) => aArray.includes(value));
+  },
+  [Operator.NotIn]: (a: any, b: any[]) => {
+    const aArray = makeArray(a);
+    const bArray = makeArray(b);
+    return bArray.some((value) => !aArray.includes(value));
+  },
+};
+
+function makeArray(a: unknown): unknown[] {
+  if (!a) {
+    return [];
+  }
+  const value = Array.isArray(a) ? a : [a];
+
+  return value;
+}
+
 class Lsdb {
   private database: string;
   private collections: { [key: string]: Collection };
@@ -61,7 +91,7 @@ class Lsdb {
   find(entity: string, { where, limit, skip = 0, sort }: FindOptions<Entry>): Collection | undefined {
     const dataset = this.collections[entity];
 
-    let result = dataset.slice(skip, limit);
+    let result = sort ? dataset : dataset.slice(skip, limit);
 
     if (where) {
       const { field, operator, valueToFilterBy } = this.handleWhere(where);
@@ -69,13 +99,26 @@ class Lsdb {
     }
 
     if (sort) {
+      function sortByField<T>(field: keyof T, order = 'asc') {
+        return (a: T, b: T) => {
+          const aValue = a[field];
+          const bValue = b[field];
+          if (aValue < bValue) {
+            return order === 'asc' ? -1 : 1;
+          } else if (aValue > bValue) {
+            return order === 'asc' ? 1 : -1;
+          } else {
+            return 0;
+          }
+        };
+      }
+
       const { field, order } = sort;
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      result = result.sort((a, b) => (order === 'asc' ? a[field] - b[field] : b[field] - a[field]));
+
+      result = result.sort(sortByField(field, order));
     }
 
-    return result;
+    return result.slice(skip, limit);
   }
 
   /**

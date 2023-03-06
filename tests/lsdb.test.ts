@@ -362,5 +362,25 @@ describe('lsdb', () => {
     ]);
 
     expect(lsdb.find('test-2', { limit: 3, sort: { field: 'amount', order: 'desc' } })?.length).toEqual(3);
+    expect(lsdb.find('test-2', { limit: 3, sort: { field: 'amount', order: 'asc' } })?.map((i) => i.amount)).toEqual([
+      10, 10, 15,
+    ]);
+  });
+
+  test('inser-many-limit', () => {
+    lsdb.collection(['test-2']);
+
+    lsdb.insertMany('test-2', [
+      { item: { category: 'cake', type: 'chiffon' }, amount: 10 },
+      { item: { category: 'cookies', type: 'chocolate chip' }, amount: 50 },
+      { item: { category: 'cookies', type: 'chocolate chip' }, amount: 15 },
+      { item: { category: 'cake', type: 'lemon' }, amount: 30 },
+      { item: { category: 'cake', type: 'carrot' }, amount: 20 },
+      { item: { category: 'brownies', type: 'blondie' }, amount: 10 },
+      { name: "Jane's Deli", borough: 'Brooklyn' },
+    ]);
+
+    expect(lsdb.find('test-2', { limit: 3 })?.length).toEqual(3);
+    expect(lsdb.find('test-2', { limit: 3 })?.map((i) => i.amount)).toEqual([10, 50, 15]);
   });
 });
