@@ -1,40 +1,51 @@
-import { Operator, Collection, WhereQuery, Entry, WhereOut, FindOptions } from './types';
+import { Operator, Collection, WhereQuery, Entry, WhereOut, FindOptions, OperatorMap } from './types';
 
-const OperatorOperations = {
-  [Operator.Equals]: (a: any, b: any) => a === b,
-  [Operator.NotEquals]: (a: any, b: any) => a !== b,
-  [Operator.GreaterThen]: (a: any, b: any) => a > b,
-  [Operator.GreaterThenOrEqual]: (a: any, b: any) => a >= b,
-  [Operator.LessThen]: (a: any, b: any) => a < b,
-  [Operator.LessThenOrEqual]: (a: any, b: any) => a <= b,
-  [Operator.In]: (a: any, b: any[]) => {
-    const aArray = makeArray(a);
-    const bArray = makeArray(b);
-    return bArray.some((value) => aArray.includes(value));
-  },
-  [Operator.NotIn]: (a: any, b: any[]) => {
-    const aArray = makeArray(a);
-    const bArray = makeArray(b);
-    return bArray.some((value) => !aArray.includes(value));
-  },
-};
-
-function makeArray(a: unknown): unknown[] {
+const makeArray = (a: unknown): unknown[] => {
   if (!a) {
     return [];
   }
   const value = Array.isArray(a) ? a : [a];
 
   return value;
-}
+};
+
+const sortByField = <T>(field: keyof T, order = 'asc') => {
+  return (a: T, b: T) => {
+    const aValue = a[field];
+    const bValue = b[field];
+    if (aValue < bValue) {
+      return order === 'asc' ? -1 : 1;
+    } else if (aValue > bValue) {
+      return order === 'asc' ? 1 : -1;
+    } else {
+      return 0;
+    }
+  };
+};
+
+const OperatorOperations: OperatorMap<any> = {
+  [Operator.Equals]: (a, b) => a === b,
+  [Operator.NotEquals]: (a, b) => a !== b,
+  [Operator.In]: (a, b) => {
+    const aArray = makeArray(a);
+    const bArray = makeArray(b);
+    return bArray.some((value) => aArray.includes(value));
+  },
+  [Operator.NotIn]: (a, b) => {
+    const aArray = makeArray(a);
+    const bArray = makeArray(b);
+    return bArray.some((value) => !aArray.includes(value));
+  },
+  [Operator.GreaterThen]: (a, b) => a > b,
+  [Operator.GreaterThenOrEqual]: (a, b) => a >= b,
+  [Operator.LessThen]: (a, b) => a < b,
+  [Operator.LessThenOrEqual]: (a, b) => a <= b,
+};
 
 class Lsdb {
   private database: string;
   private collections: { [key: string]: Collection };
 
-  /**
-   * @param {String} database The "Database" name
-   */
   constructor(database: string) {
     this.database = database;
 
@@ -99,20 +110,6 @@ class Lsdb {
     }
 
     if (sort) {
-      function sortByField<T>(field: keyof T, order = 'asc') {
-        return (a: T, b: T) => {
-          const aValue = a[field];
-          const bValue = b[field];
-          if (aValue < bValue) {
-            return order === 'asc' ? -1 : 1;
-          } else if (aValue > bValue) {
-            return order === 'asc' ? 1 : -1;
-          } else {
-            return 0;
-          }
-        };
-      }
-
       const { field, order } = sort;
 
       result = result.sort(sortByField(field, order));
@@ -188,9 +185,6 @@ class Lsdb {
 
   /**
    * Creating many collection entries
-   * @param {String} entity Name of collection
-   * @param {Entry[]} data Data of collection
-   * @returns {Entry[]} Multiple entries
    */
   insertMany(entity: string, data: Entry[]): Entry[] {
     const collection = this.collections[entity];

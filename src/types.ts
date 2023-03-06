@@ -16,6 +16,21 @@ export enum Operator {
   LessThenOrEqual = '$lte',
 }
 
+export type EqualsOperation<T> = (a: T, b: T) => boolean;
+export type InOperation<T> = (a: T, b: T[]) => boolean;
+export type ComparisonOperation = (a: number, b: number) => boolean;
+
+export interface OperatorMap<T> {
+  [Operator.Equals]: EqualsOperation<T>;
+  [Operator.NotEquals]: EqualsOperation<T>;
+  [Operator.In]: InOperation<T>;
+  [Operator.NotIn]: InOperation<T>;
+  [Operator.GreaterThen]: ComparisonOperation;
+  [Operator.GreaterThenOrEqual]: ComparisonOperation;
+  [Operator.LessThen]: ComparisonOperation;
+  [Operator.LessThenOrEqual]: ComparisonOperation;
+}
+
 export type WhereQuery<T> = {
   [K in keyof T]?: {
     [key in Operator]?: T[K] | T[K][];
