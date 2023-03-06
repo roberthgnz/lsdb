@@ -44,23 +44,14 @@ const OperatorOperations = {
   },
 };
 
-type WhereOperators =
-  | Operator.Equals
-  | Operator.NotEquals
-  | Operator.GreaterThen
-  | Operator.GreaterThenOrEqual
-  | Operator.LessThen
-  | Operator.LessThenOrEqual;
+type WhereQuery<T> = {
+  [K in keyof T]?: {
+    [key in Operator]?: T[K] | T[K][];
+  };
+}
 
-type WhereArrayOperators = Operator.In | Operator.NotIn;
-
-type WhereCondition<T extends string, T1> = { [x in T]: T1 };
-type WhereOptions<T> = {
-  [fieldKey in keyof T]: Partial<WhereCondition<WhereOperators, any>> &
-    Partial<WhereCondition<WhereArrayOperators, any[]>>;
-};
 type FindOptions<T> = {
-  where?: WhereOptions<T>;
+  where?: WhereQuery<T>;
   limit?: number;
   skip?: number;
   sort?: {
@@ -92,7 +83,7 @@ class Lsdb {
     this.collections = JSON.parse(localStorage.getItem(database) || '{}');
   }
 
-  private handleWhere(where: WhereOptions<Document> | undefined): WhereOut {
+  private handleWhere(where: WhereQuery<Document> | undefined): WhereOut {
     if (!where) return { valueToFilterBy: undefined, field: '', operator: '' };
 
     for (const field in where) {
@@ -117,7 +108,7 @@ class Lsdb {
   }
 
   private createEntry(data: Document): Document {
-    const _id = Math.random().toString(36).substr(2, 9);
+    const _id = Math.random().toString(36).slice(2, 9);
 
     const entry = {
       ...data,
@@ -168,7 +159,7 @@ class Lsdb {
    * @param where Options which consist of mongo-like definition
    * @returns {Document|undefined} Single entry or undefined
    */
-  findOne(entity: string, { where }: { where: WhereOptions<Document> }): Document | undefined {
+  findOne(entity: string, { where }: { where: WhereQuery<Document> }): Document | undefined {
     const dataset = this.collections[entity];
 
     const { valueToFilterBy, field, operator } = this.handleWhere(where);
@@ -296,7 +287,7 @@ class Lsdb {
    * @param where Options which consist of mongo-like definition
    * @returns {Collection} Collection without deleted entry
    */
-  delete(entity: string, { where }: { where: WhereOptions<Document> }): Collection {
+  delete(entity: string, { where }: { where: WhereQuery<Document> }): Collection {
     const dataset = this.collections[entity];
 
     const { valueToFilterBy, field, operator } = this.handleWhere(where);
