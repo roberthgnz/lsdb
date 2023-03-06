@@ -94,13 +94,12 @@ class Lsdb {
       for (const op in filters) {
         const operator = op as Operator;
 
-        if (Object.prototype.hasOwnProperty.call(filters, operator)) {
-          const areOptionsProvided = Object.prototype.hasOwnProperty.call(filters[operator], 'values');
-
-          const valueToFilterBy = areOptionsProvided ? filters[operator].values : filters[operator];
-
-          return { field, operator, valueToFilterBy };
+        if (!OperatorOperations[operator]) {
+          throw new Error(`Operator ${operator} is not supported`);
         }
+
+        return { valueToFilterBy: filters[operator], field, operator };
+        
       }
     }
 
