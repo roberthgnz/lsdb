@@ -1,71 +1,3 @@
-type Document = {
-  _id?: string;
-  [key: string]: unknown;
-};
-
-type Collection = Document[];
-
-enum Operator {
-  Equals = '$eq',
-  NotEquals = '$ne',
-  In = '$in',
-  NotIn = '$nin',
-  GreaterThen = '$gt',
-  GreaterThenOrEqual = '$gte',
-  LessThen = '$lt',
-  LessThenOrEqual = '$lte',
-}
-
-function makeArray(a: unknown): unknown[] {
-  if (!a) {
-    return [];
-  }
-  const value = Array.isArray(a) ? a : [a];
-
-  return value;
-}
-
-const OperatorOperations = {
-  [Operator.Equals]: (a: any, b: any) => a === b,
-  [Operator.NotEquals]: (a: any, b: any) => a !== b,
-  [Operator.GreaterThen]: (a: any, b: any) => a > b,
-  [Operator.GreaterThenOrEqual]: (a: any, b: any) => a >= b,
-  [Operator.LessThen]: (a: any, b: any) => a < b,
-  [Operator.LessThenOrEqual]: (a: any, b: any) => a <= b,
-  [Operator.In]: (a: any, b: any[]) => {
-    const aArray = makeArray(a);
-    const bArray = makeArray(b);
-    return bArray.some((value) => aArray.includes(value));
-  },
-  [Operator.NotIn]: (a: any, b: any[]) => {
-    const aArray = makeArray(a);
-    const bArray = makeArray(b);
-    return bArray.some((value) => !aArray.includes(value));
-  },
-};
-
-type WhereQuery<T> = {
-  [K in keyof T]?: {
-    [key in Operator]?: T[K] | T[K][];
-  };
-}
-
-type FindOptions<T> = {
-  where?: WhereQuery<T>;
-  limit?: number;
-  skip?: number;
-  sort?: {
-    field: keyof T;
-    order: 'asc' | 'desc';
-  };
-};
-
-type WhereOut = {
-  valueToFilterBy: any;
-  field: string;
-  operator: string;
-};
-
 class Lsdb {
   private database: string;
   private collections: { [key: string]: Collection };
@@ -83,7 +15,7 @@ class Lsdb {
     this.collections = JSON.parse(localStorage.getItem(database) || '{}');
   }
 
-  private handleWhere(where: WhereQuery<Document> | undefined): WhereOut {
+  private handleWhere(where: WhereQuery<Entry> | undefined): WhereOut {
     if (!where) return { valueToFilterBy: undefined, field: '', operator: '' };
 
     for (const field in where) {
@@ -99,14 +31,13 @@ class Lsdb {
         }
 
         return { valueToFilterBy: filters[operator], field, operator };
-        
       }
     }
 
     return { valueToFilterBy: undefined, field: '', operator: '' };
   }
 
-  private createEntry(data: Document): Document {
+  private createEntry(data: Entry): Entry {
     const _id = Math.random().toString(36).slice(2, 9);
 
     const entry = {
@@ -119,8 +50,6 @@ class Lsdb {
 
   /**
    * Count the number of entries in the collection
-   * @param {String} entity Name of collection
-   * @returns {Number} Number of data within the collection
    */
   count(entity: string): number {
     return Object.keys(this.collections[entity]).length;
@@ -128,11 +57,8 @@ class Lsdb {
 
   /**
    * Get multiple entries
-   * @param {String} entity Name of collection
-   * @param {FindOptions} options Options, where, limit, skip, sort
-   * @returns {Collection|undefined} Collection or undefined
    */
-  find(entity: string, { where, limit, skip = 0, sort }: FindOptions<Document>): Collection | undefined {
+  find(entity: string, { where, limit, skip = 0, sort }: FindOptions<Entry>): Collection | undefined {
     const dataset = this.collections[entity];
 
     let result = dataset.slice(skip, limit);
@@ -154,11 +80,8 @@ class Lsdb {
 
   /**
    * Get single entry
-   * @param {String} entity Name of collection
-   * @param where Options which consist of mongo-like definition
-   * @returns {Document|undefined} Single entry or undefined
    */
-  findOne(entity: string, { where }: { where: WhereQuery<Document> }): Document | undefined {
+  findOne(entity: string, { where }: { where: WhereQuery<Entry> }): Entry | undefined {
     const dataset = this.collections[entity];
 
     const { valueToFilterBy, field, operator } = this.handleWhere(where);
@@ -170,9 +93,6 @@ class Lsdb {
 
   /**
    * Creating list of collections
-   * @param {String|Array} data Contains the name of the collection/s
-   * @param {boolean} replace If set to true, previously created collections will be deleted.
-   * @returns Success or failure
    */
   collection(data: string | string[], replace = false): unknown {
     try {
@@ -208,11 +128,8 @@ class Lsdb {
 
   /**
    * Creating collection entry
-   * @param {String} entity Name of collection
-   * @param {Document} data Data of collection
-   * @returns {Document} Single entry
    */
-  insert(entity: string, data: Document): Document {
+  insert(entity: string, data: Entry): Entry {
     const collection = this.collections[entity];
 
     const entry = this.createEntry(data);
@@ -229,10 +146,10 @@ class Lsdb {
   /**
    * Creating many collection entries
    * @param {String} entity Name of collection
-   * @param {Document[]} data Data of collection
-   * @returns {Document[]} Multiple entries
+   * @param {Entry[]} data Data of collection
+   * @returns {Entry[]} Multiple entries
    */
-  insertMany(entity: string, data: Document[]): Document[] {
+  insertMany(entity: string, data: Entry[]): Entry[] {
     const collection = this.collections[entity];
 
     const entries = data.map((data) => this.createEntry(data));
@@ -248,7 +165,6 @@ class Lsdb {
 
   /**
    * Get single collection or all collection entries
-   * @returns {Array} Collection or entries of collection
    */
   all(entity?: string): Collection | { [key: string]: Collection } {
     if (entity) {
@@ -259,12 +175,14 @@ class Lsdb {
 
   /**
    * Update collection entry
-   * @param {String} entity Name of collection
-   * @param {Document} params Parameters to change
-   * @param {Document} data Data of collection
-   * @returns {Document} Updated collection entry
    */
-  update(entity: string, params: Document, data: Document): Document {
+  update(
+    entity: string,
+    params: {
+      [key: string]: unknown;
+    },
+    data: Entry,
+  ): Entry {
     const key = Object.keys(params)[0];
 
     const index = this.collections[entity].findIndex((i) => {
@@ -282,11 +200,8 @@ class Lsdb {
 
   /**
    * Delete entry from collection
-   * @param {String} entity Name of collection
-   * @param where Options which consist of mongo-like definition
-   * @returns {Collection} Collection without deleted entry
    */
-  delete(entity: string, { where }: { where: WhereQuery<Document> }): Collection {
+  delete(entity: string, { where }: { where: WhereQuery<Entry> }): Collection {
     const dataset = this.collections[entity];
 
     const { valueToFilterBy, field, operator } = this.handleWhere(where);
