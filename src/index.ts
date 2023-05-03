@@ -1,4 +1,57 @@
-import { Operator, Collection, WhereQuery, Entry, WhereOut, FindOptions, OperatorMap } from './types';
+type Entry = {
+  _id?: string;
+  [key: string]: unknown;
+};
+
+type Collection = Entry[];
+
+enum Operator {
+  Equals = '$eq',
+  NotEquals = '$ne',
+  In = '$in',
+  NotIn = '$nin',
+  GreaterThen = '$gt',
+  GreaterThenOrEqual = '$gte',
+  LessThen = '$lt',
+  LessThenOrEqual = '$lte',
+}
+
+type EqualsOperation<T> = (a: T, b: T) => boolean;
+type InOperation<T> = (a: T, b: T[]) => boolean;
+type ComparisonOperation = (a: number, b: number) => boolean;
+
+interface OperatorMap<T> {
+  [Operator.Equals]: EqualsOperation<T>;
+  [Operator.NotEquals]: EqualsOperation<T>;
+  [Operator.In]: InOperation<T>;
+  [Operator.NotIn]: InOperation<T>;
+  [Operator.GreaterThen]: ComparisonOperation;
+  [Operator.GreaterThenOrEqual]: ComparisonOperation;
+  [Operator.LessThen]: ComparisonOperation;
+  [Operator.LessThenOrEqual]: ComparisonOperation;
+}
+
+type WhereQuery<T> = {
+  [K in keyof T]?: {
+    [key in Operator]?: T[K] | T[K][];
+  };
+};
+
+type FindOptions<T> = {
+  where?: WhereQuery<T>;
+  limit?: number;
+  skip?: number;
+  sort?: {
+    field: keyof T;
+    order: 'asc' | 'desc';
+  };
+};
+
+type WhereOut = {
+  valueToFilterBy: any;
+  field: string;
+  operator: string;
+};
 
 const makeArray = (a: unknown): unknown[] => {
   if (!a) {
@@ -253,4 +306,4 @@ class Lsdb {
   }
 }
 
-export default Lsdb;
+ default Lsdb;
