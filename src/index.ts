@@ -306,4 +306,4 @@ class Lsdb {
   }
 }
 
- default Lsdb;
+export default Lsdb;
