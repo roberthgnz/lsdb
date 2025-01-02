@@ -9,6 +9,7 @@
     "lib/**/*"
   ],
   "scripts": {
+    "start:playground": "node playground/server.js",
     "dev": "esbuild --watch src/index.ts --format=esm --outdir=lib --sourcemap",
     "build": "esbuild src/index.ts --format=esm --outdir=lib --minify && npm run types",
     "types": "tsc --declaration --emitDeclarationOnly",
