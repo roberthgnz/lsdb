@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LSDB Playground</title>
+</head>
+
+<body>
+    <div class="container">
+        <h1>LSDB Playground</h1>
+
+        <div class="actions">
+            <button onclick="createCollections()">Create Collections</button>
+            <button onclick="insertData()">Insert Data</button>
+            <button onclick="queryData()">Query Data</button>
+            <button onclick="clearData()">Clear Data</button>
+        </div>
+
+        <div class="output">
+            <h3>Output:</h3>
+            <pre id="output"></pre>
+        </div>
+    </div>
+    <script type="module" src="./main.js"></script>
+</body>
+
+</html>
