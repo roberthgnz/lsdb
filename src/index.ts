@@ -1,9 +1,8 @@
-type Entry = {
-  _id?: string;
-  [key: string]: unknown;
+type Element<T = unknown> = T & {
+  _id: string;
 };
 
-type Collection = Entry[];
+type Collection<T = unknown> = Element<T>[];
 
 enum Operator {
   Equals = '$eq',
@@ -109,7 +108,7 @@ class Lsdb {
     this.collections = JSON.parse(localStorage.getItem(database) || '{}');
   }
 
-  private handleWhere(where: WhereQuery<Entry> | undefined): WhereOut {
+  private handleWhere<T>(where: WhereQuery<T> | undefined): WhereOut {
     if (!where) return { valueToFilterBy: undefined, field: '', operator: '' };
 
     for (const field in where) {
@@ -131,15 +130,15 @@ class Lsdb {
     return { valueToFilterBy: undefined, field: '', operator: '' };
   }
 
-  private createEntry(data: Entry): Entry {
+  private insertElement<T>(data: T): Element<T> {
     const _id = Math.random().toString(36).slice(2, 9);
 
-    const entry = {
+    const Element = {
       ...data,
       _id,
     };
 
-    return entry;
+    return Element;
   }
 
   /**
@@ -152,8 +151,8 @@ class Lsdb {
   /**
    * Get multiple entries
    */
-  find(entity: string, { where, limit, skip = 0, sort }: FindOptions<Entry>): Collection | undefined {
-    const dataset = this.collections[entity];
+  find<T>(entity: string, { where, limit, skip = 0, sort }: FindOptions<T>): Element<T>[] | undefined {
+    const dataset = this.collections[entity] as Element<T>[];
 
     let result = sort ? dataset : dataset.slice(skip, limit);
 
@@ -172,10 +171,10 @@ class Lsdb {
   }
 
   /**
-   * Get single entry
+   * Get single Element
    */
-  findOne(entity: string, { where }: { where: WhereQuery<Entry> }): Entry | undefined {
-    const dataset = this.collections[entity];
+  findOne<T>(entity: string, { where }: { where: WhereQuery<T> }): Element<T> | undefined {
+    const dataset = this.collections[entity] as Element<T>[];
 
     const { valueToFilterBy, field, operator } = this.handleWhere(where);
 
@@ -220,29 +219,29 @@ class Lsdb {
   }
 
   /**
-   * Creating collection entry
+   * Creating collection Element
    */
-  insert(entity: string, data: Entry): Entry {
-    const collection = this.collections[entity];
+  insert<T>(entity: string, data: T): Element<T> {
+    const collection = this.collections[entity] as Element<T>[];
 
-    const entry = this.createEntry(data);
+    const Element = this.insertElement(data);
 
-    const dataset = [...collection, entry];
+    const dataset = [...collection, Element];
 
     this.collections[entity] = dataset;
 
     localStorage.setItem(this.database, JSON.stringify(this.collections));
 
-    return entry;
+    return Element;
   }
 
   /**
    * Creating many collection entries
    */
-  insertMany(entity: string, data: Entry[]): Entry[] {
-    const collection = this.collections[entity];
+  insertMany<T>(entity: string, data: T[]): Element<T>[] {
+    const collection = this.collections[entity] as Element<T>[];
 
-    const entries = data.map((data) => this.createEntry(data));
+    const entries = data.map((data) => this.insertElement(data));
 
     const dataset = [...collection, ...entries];
 
@@ -256,30 +255,30 @@ class Lsdb {
   /**
    * Get single collection or all collection entries
    */
-  all(entity?: string): Collection | { [key: string]: Collection } {
+  all<T>(entity?: string): Element<T>[] | { [key: string]: Element<T>[] } {
     if (entity) {
-      return this.collections[entity];
+      return this.collections[entity] as Element<T>[];
     }
-    return this.collections;
+    return this.collections as { [key: string]: Element<T>[] };
   }
 
   /**
-   * Update collection entry
+   * Update collection Element
    */
-  update(
+  update<T>(
     entity: string,
     params: {
       [key: string]: unknown;
     },
-    data: Entry,
-  ): Entry {
+    data: T,
+  ): Element<T> {
     const key = Object.keys(params)[0];
 
-    const index = this.collections[entity].findIndex((i) => {
+    const index = (this.collections[entity] as Element<T>[]).findIndex((i) => {
       return i[key] === params[key];
     });
 
-    const doc = this.collections[entity][index];
+    const doc = (this.collections[entity] as Element<T>[])[index];
 
     this.collections[entity][index] = { ...doc, ...data };
 
@@ -289,10 +288,10 @@ class Lsdb {
   }
 
   /**
-   * Delete entry from collection
+   * Delete Element from collection
    */
-  delete(entity: string, { where }: { where: WhereQuery<Entry> }): Collection {
-    const dataset = this.collections[entity];
+  delete<T>(entity: string, { where }: { where: WhereQuery<T> }): Element<T>[] {
+    const dataset = this.collections[entity] as Element<T>[];
 
     const { valueToFilterBy, field, operator } = this.handleWhere(where);
 
