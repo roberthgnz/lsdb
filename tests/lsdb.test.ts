@@ -19,7 +19,7 @@ class LocalStorageMock {
     this.store = {};
   }
 
-  getItem(key: string): any {
+  getItem(key: string) {
     return this.store[key] || null;
   }
 
@@ -307,6 +307,15 @@ describe('lsdb', () => {
         where: {},
       }),
     ).toEqual(undefined);
+
+    expect(
+      lsdb.findOne('test-1', {
+        where: { number: { $eq: 50 } },
+      }),
+    ).toEqual({
+      _id: n2._id,
+      number: 50,
+    });
   });
 
   test('insert-update', () => {
