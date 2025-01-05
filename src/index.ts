@@ -1,5 +1,6 @@
 type Element<T = unknown> = T & {
   _id: string;
+  [key: string]: unknown;
 };
 
 type Collection<T = unknown> = Element<T>[];
