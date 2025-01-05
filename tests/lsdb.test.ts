@@ -1,3 +1,5 @@
+import { describe, expect, test, beforeEach } from 'vitest';
+
 import Lsdb from '../src/index';
 
 let lsdb: Lsdb;
