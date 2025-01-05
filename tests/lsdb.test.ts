@@ -36,7 +36,7 @@ class LocalStorageMock {
   }
 }
 
-global.localStorage = new LocalStorageMock();
+globalThis.localStorage = new LocalStorageMock();
 
 describe('lsdb', () => {
   beforeEach(() => {
@@ -381,6 +381,6 @@ describe('lsdb', () => {
     ]);
 
     expect(lsdb.find('test-2', { limit: 3 })?.length).toEqual(3);
-    expect(lsdb.find('test-2', { limit: 3 })?.map((i) => i.amount)).toEqual([10, 50, 15]);
+    expect(lsdb.find<{ amount: number }>('test-2', { limit: 3 })?.map((i) => i.amount)).toEqual([10, 50, 15]);
   });
 });
