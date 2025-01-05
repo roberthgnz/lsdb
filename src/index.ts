@@ -48,7 +48,7 @@ type FindOptions<T> = {
 };
 
 type WhereOut = {
-  valueToFilterBy: any;
+  valueToFilterBy: unknown;
   field: string;
   operator: string;
 };
@@ -76,6 +76,7 @@ const sortByField = <T>(field: keyof T, order = 'asc') => {
   };
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const OperatorOperations: OperatorMap<any> = {
   [Operator.Equals]: (a, b) => a === b,
   [Operator.NotEquals]: (a, b) => a !== b,
