@@ -15,7 +15,7 @@
     "types": "tsc --declaration --emitDeclarationOnly",
     "test": "vitest",
     "format": "prettier --write \"src/**/*.ts\"",
-    "lint": "eslint src --ext .ts --fix",
+    "lint": "npx eslint --fix",
     "prepare": "npm run build",
     "prepublishOnly": "npm run test && npm run lint",
     "preversion": "npm run lint",
@@ -37,6 +37,7 @@
   },
   "homepage": "https://github.com/roberthgnz/lsdb#readme",
   "devDependencies": {
+    "@eslint/js": "^9.17.0",
     "@typescript-eslint/eslint-plugin": "8.19.0",
     "@typescript-eslint/parser": "8.19.0",
     "esbuild": "0.24.2",
@@ -44,6 +45,7 @@
     "eslint-config-prettier": "9.1.0",
     "prettier": "3.4.2",
     "typescript": "5.7.2",
+    "typescript-eslint": "^8.19.0",
     "vitest": "^2.1.8"
   }
 }
