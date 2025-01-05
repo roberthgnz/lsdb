@@ -1,6 +1,6 @@
 {
   "name": "@reliutg/lsdb",
-  "version": "4.9.1",
+  "version": "4.10.0",
   "description": "Database powered by localStorage with JSON definition",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
